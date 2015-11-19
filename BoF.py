@@ -9,12 +9,15 @@ datapath = 'C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodima
 # Create image loader
 loader = ImageLoader('image_classification.csv',datapath)
 
-# Create feature extraction and keypoint detector objects
-fea_det = cv2.FeatureDetector_create("SIFT")
-des_ext = cv2.DescriptorExtractor_create("SIFT")
+class BoF:
+    # Create feature detection and keypoint extractor objects (from OpenCV)
+    self.fea_det = cv2.FeatureDetector_create("SIFT")
+    self.des_ext = cv2.DescriptorExtractor_create("SIFT")
+    
+    # List where all the descriptors are stored
+    self.des_list = []
 
-# List where all the descriptors are stored
-des_list = []
+
 
 loader.startIteration()
 for i in range(10):
