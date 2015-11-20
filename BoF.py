@@ -56,14 +56,15 @@ class BoF:
     def getFeatureSet(self):
         return self._im_features
 
-    # Compute unstandardized feature histogram for parameter image
+    # Compute unstandardized feature histogram for a new, previously unseen image
+    # based on vocabulary of visual words defined over training image set
     def getImageFeatures(self, img):
         print 'getting test image features...'
         des = self._createDescriptors(img)
         hist = self._createHistOfFeatures(des)
         return hist
 
-    # Create descriptors from images in training set
+    # Extract descriptors from parameter image
     def _createDescriptors(self, img):
         print 'type(img): ' + str(type(img))
         # Detect keypoints
@@ -72,6 +73,7 @@ class BoF:
         _, des = self.des_ext.compute(img, kpts)
         return des
 
+    # Perform k-means clustering on descriptor set of training image set
     def _clusterVisualWords(self, des_list, k):
         # Stack all the descriptors vertically in a numpy array
         descriptors = des_list[0][1]
@@ -87,7 +89,7 @@ class BoF:
         return vocab, variance
 
     # Create histogram of features that will represent
-    # the  parameter image and will be used for classification.
+    # the parameter image and will be used for classification.
     # This is done by assigning each descriptor in parameter "descriptors" its nearest
     # visual "word" in the vocabulary as defined in parameter vocab
     def _createHistOfFeatures(self, descriptors):
