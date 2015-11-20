@@ -51,14 +51,27 @@ class BoF:
             self._im_features[i] = self._createHistOfFeatures(des_list[i][1])
 
         # Standardize feature set
-        self._standardize()
+        self._im_features = self._standardize(self._im_features)
+
+        # Associate image path with image's feature histogram in dictionary
+        # so that it can be looked up later
+        for i in range(len(self._im_features)):
+            self.feat_dict[des_list[i][0]] = self._im_features[i]
+
+        print 'dict keys:\n' + str(self.feat_dict.keys())
+
 
     def getFeatureSet(self):
         return self._im_features
 
+    # Retrieve the histogram of features for the parameter image
+    # which is from the training set. Not to be confused with the extractImageFeatures() method.
+    def getFeaturesForThisImage(self,image_path):
+        return self.feat_dict[image_path]
+
     # Compute unstandardized feature histogram for a new, previously unseen image
     # based on vocabulary of visual words defined over training image set
-    def getImageFeatures(self, img):
+    def extractImageFeatures(self, img):
         print 'getting test image features...'
         des = self._createDescriptors(img)
         hist = self._createHistOfFeatures(des)
@@ -115,10 +128,11 @@ class BoF:
         idf = np.array(np.log((1.0*len(des_list)+1) / (1.0*nbr_occurences + 1)), 'float32')
         return idf
 
-    def _standardize(self):
+    # Standardize features: center by removing mean and scaling to unit variance
+    def _standardize(self,vect):
         # Standardize features: center by removing mean and scaling to unit variance
-        stdSlr = StandardScaler().fit(self._im_features)
-        _im_features = stdSlr.transform(self._im_features)
+        stdSlr = StandardScaler().fit(vect)
+        return stdSlr.transform(vect)
 
 def _test():
     datapath = 'C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodimages'
@@ -129,12 +143,12 @@ def _test():
     bof.createBagOfWords()
     feats = bof.getFeatureSet()
 
-    test_datapath = 'C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodimages\pp512\07.05.2014 11_01_29.jpg'
+    test_datapath = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'
     loader.startIteration()
     [img,classes,image_path] = loader.getNextImage()
     loader.closeIteration()
-    feats = bof.getImageFeatures(img)
-    np.savetxt('test_feats.txt',feats)
+    feats = bof.extractImageFeatures(img)
+    print 'features for image:\n' + str(bof.getFeaturesForThisImage('C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'))
 
 
 def main():
