@@ -14,46 +14,63 @@ class BoF:
         self.fea_det = cv2.FeatureDetector_create("SIFT")
         self.des_ext = cv2.DescriptorExtractor_create("SIFT")
 
+        # Feature dictionary that will allow the lookup of the computed
+        # feature histogram for a given feature
+        self.feat_dict = {}
+
+        self._im_features = []
 
     def createBagOfWords(self):
         # Create set of all image descriptors from training image set
         # (while removing None elements)
-        des_list = self._createKptsDscrpts()
+        des_list = []
+
+        # Start reading in images from training set
+        self.loader.startIteration()
+        des_list = []
+        for i in range(10): # while self.loader.hasNext():
+            if i%25 == 0:
+                print 'Processing image no. ' + str(i)
+            # Read in next image
+            [im,classes,image_path] = self.loader.getNextImage()
+            # Compute descriptors
+            des = self._createDescriptors(im)
+            if des != None:
+                # Store descriptors
+                des_list.append((image_path, des))
+        self.loader.closeIteration()
 
         # Cluster descriptors to create "vocabulary" of visual words
         # over image training set
-        vocab, variance = self._clusterVisualWords(des_list, self.vocab_size)
+        self.vocab, variance = self._clusterVisualWords(des_list, self.vocab_size)
 
-        # For each image i, create its histogram of features that will represent
-        # the image and will be used for classification.
-        # This is done by assigning each descriptor in i its nearest
-        # visual "word" in the vocabulary calculated in the previous step.
-        self._im_features = self._createHistOfFeatures(des_list, vocab, self.vocab_size)
+        # Calculate histogram of features for each image using defined vocabulary
+        # and calculated image descriptors
+        self._im_features = np.zeros((len(des_list),self.vocab_size), "float32")
+        for i in range(len(des_list)):
+            self._im_features[i] = self._createHistOfFeatures(des_list[i][1])
 
+        # Standardize feature set
         self._standardize()
 
     def getFeatureSet(self):
         return self._im_features
 
+    # Compute unstandardized feature histogram for parameter image
+    def getImageFeatures(self, img):
+        print 'getting test image features...'
+        des = self._createDescriptors(img)
+        hist = self._createHistOfFeatures(des)
+        return hist
+
     # Create descriptors from images in training set
-    def _createKptsDscrpts(self):
-        # Start reading in images from training set
-        self.loader.startIteration()
-        dscrpts = []
-        for i in range(200): # while self.loader.hasNext():
-            if i%25 == 0:
-                print 'Processing image no. ' + str(i)
-            # Read in next image
-            [im,classes,image_path] = self.loader.getNextImage()
-            # Detect keypoints
-            kpts = self.fea_det.detect(im)
-            # Create descriptors from keypoints
-            kpts, des = self.des_ext.compute(im, kpts)
-            if des != None:
-                # Store descriptors
-                dscrpts.append((image_path, des))
-        self.loader.closeIteration()
-        return dscrpts
+    def _createDescriptors(self, img):
+        print 'type(img): ' + str(type(img))
+        # Detect keypoints
+        kpts = self.fea_det.detect(img)
+        # Create descriptors from keypoints
+        _, des = self.des_ext.compute(img, kpts)
+        return des
 
     def _clusterVisualWords(self, des_list, k):
         # Stack all the descriptors vertically in a numpy array
@@ -69,20 +86,21 @@ class BoF:
         vocab, variance = kmeans(descriptors, k, 1)
         return vocab, variance
 
-    def _createHistOfFeatures(self, des_list, vocab, k):
-        # Calculate the histogram of features
-        feats = np.zeros((len(des_list), k), "float32")
-        for i in xrange(len(des_list)):
-            # Each descriptor in this entry of the descriptor list is assigned
-            # its nearest visual "word".
-            # words is a length M array, where M is the number of descriptors for
-            # the given image. Each entry in words stores an index to the nearest
-            # visual word in the vocabulary.
-            words, distance = vq(des_list[i][1],vocab)
-            # for each vocabulary index in words, increment the count for that word
-            # in the histogram
-            for w in words:
-                feats[i][w] += 1
+    # Create histogram of features that will represent
+    # the  parameter image and will be used for classification.
+    # This is done by assigning each descriptor in parameter "descriptors" its nearest
+    # visual "word" in the vocabulary as defined in parameter vocab
+    def _createHistOfFeatures(self, descriptors):
+        feats = np.zeros((1, self.vocab_size), "float32")
+        # Each descriptor in the descriptor list is assigned its nearest visual "word".
+        # words is a length M array, where M is the number of descriptors for
+        # the given image. Each entry in words stores an index to the nearest
+        # visual word in the vocabulary.
+        words, distance = vq(descriptors,self.vocab)
+        # for each vocabulary index in words, increment the count for that word
+        # in the histogram
+        for w in words:
+            feats[0][w] += 1
         return feats
 
 
@@ -108,8 +126,14 @@ def _test():
     bof = BoF(loader,vocab_size)
     bof.createBagOfWords()
     feats = bof.getFeatureSet()
-    print str(feats.shape)
-    np.savetxt('test-20-11.txt',feats)
+
+    test_datapath = 'C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodimages\pp512\07.05.2014 11_01_29.jpg'
+    loader.startIteration()
+    [img,classes,image_path] = loader.getNextImage()
+    loader.closeIteration()
+    feats = bof.getImageFeatures(img)
+    np.savetxt('test_feats.txt',feats)
+
 
 def main():
     _test()
