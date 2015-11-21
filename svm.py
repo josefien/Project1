@@ -1,4 +1,5 @@
 from image_loader import *
+from gabor_filter import * 
 import cv2
 import numpy as np
 
@@ -20,9 +21,6 @@ def load_base():
     loader.closeIteration()
     return images, all_classes
 
-# Load images
-
-# For now: first n are for training, remaining m images for testing
 
 # Write labels to numbers
 
@@ -76,11 +74,15 @@ def hog(img):
     return hist
 
 if __name__ == '__main__':
+    # Load images
+
     imgs,classes = load_base()
     print(classes)
 
     for img in imgs:
         print(img)
+    # For now: first n are for training, remaining m images for testing
+
     samples = np.array(np.random.random((10,2)), dtype = np.float32)
     print(samples)
     y_train = np.array([2.,0.,0.,2.,0.,1.,0.,2.,1.,2.], dtype = np.float32)
