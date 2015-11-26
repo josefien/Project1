@@ -135,19 +135,27 @@ class BoF:
         return stdSlr.transform(vect)
 
 def _test():
+    # Path to image data set
     datapath = 'C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodimages'
+    # Size of vocabulary of visual features/words
     vocab_size = 50
-    # Create image loader
+    # Create image loader to be passed to BoF instance
     loader = ImageLoader('image_classification.csv',datapath)
+    
+    # Create BoF instance
     bof = BoF(loader,vocab_size)
+    # Create bag-of-features
     bof.createBagOfWords()
-    feats = bof.getFeatureSet()
 
+    # Path to test image
     test_datapath = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'
     loader.startIteration()
+    # Load the image
     [img,classes,image_path] = loader.getNextImage()
     loader.closeIteration()
+    # Extract features from test image according to defined vocabulary
     feats = bof.extractImageFeatures(img)
+    # Print extracted features
     print 'features for image:\n' + str(bof.getFeaturesForThisImage('C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'))
 
 
