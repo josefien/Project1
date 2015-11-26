@@ -41,8 +41,9 @@ class ImageLoader:
 	def getNextImage(self):
 		image = self.__img
 		category = self.__classes
+		pth = self.__full_image_path
 		self.__loadNextImage();
-		return image, category
+		return image, category, pth
 			 
 	##	close the current table
 	def closeIteration(self):
@@ -60,8 +61,8 @@ class ImageLoader:
 			path = self.__ip+line[0]+os.path.sep	# concatenated imagepath from table
 			for filename in os.listdir(path ):	# is there a matching file?
 				if line[1].replace(':','_') in filename:
+					self.__full_image_path = path+filename
 					self.__img = cv2.imread(path+filename)	# matching file found
 					self.__classes = line[3].split(' ')
 					return
 			line = self.__table.readline()	# no image found for this line -> go on with next line
-
