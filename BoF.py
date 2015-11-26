@@ -136,7 +136,7 @@ class BoF:
 
 def _test():
     # Path to image data set
-    datapath = 'C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodimages'
+    datapath = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages'
     # Size of vocabulary of visual features/words
     vocab_size = 50
     # Create image loader to be passed to BoF instance
@@ -148,7 +148,7 @@ def _test():
     bof.createBagOfWords()
 
     # Path to test image
-    test_datapath = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'
+    # test_datapath = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'
     loader.startIteration()
     # Load the image
     [img,classes,image_path] = loader.getNextImage()
@@ -156,7 +156,7 @@ def _test():
     # Extract features from test image according to defined vocabulary
     feats = bof.extractImageFeatures(img)
     # Print extracted features
-    print 'features for image:\n' + str(bof.getFeaturesForThisImage('C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'))
+    print 'features for image:\n' + str(bof.getFeaturesForThisImage('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'))
 
 
 def main():
