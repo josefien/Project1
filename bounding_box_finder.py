@@ -44,7 +44,11 @@ class BoundingBoxFinder:
 
 	@staticmethod
 	def _draw_bounding_box(img,contours):
-		print 'contours[0][0] = ' + str(len(contours[0]))
+		# print 'len(contours) = ' + str(len(contours))
+		# print 'len(contours[0]) = ' + str(len(contours[0]))
+		# print 'len(contours[0][0]) = ' + str(len(contours[0][0]))
+		# print 'len(contours[0][0][0]) = ' + str(len(contours[0][0][0]))
+		# print 'len(contours[0][0][0][0]) = ' + str(contours[0][0][0][0])
 		minx = sys.maxint
 		miny = sys.maxint
 		maxx = -sys.maxint
@@ -52,29 +56,28 @@ class BoundingBoxFinder:
 
 		for i in range(len(contours)):
 			for j in range(len(contours[i])):
-				print 'contours[i][0][j][0] = ' + str(contours[i][0][j][0])
-				print 'contours[i][0][j][1] = ' + str(contours[i][0][j][1])
-				minx = min(minx, contours[i][0][j][0])
-				maxx = max(maxx, contours[i][0][j][0])
-				miny = min(miny, contours[i][0][j][1])
-				maxy = max(maxy, contours[i][0][j][1])
+				# print 'contours[i][0][j][0] = ' + str(contours[i][j][0][0])
+				# print 'contours[i][0][j][1] = ' + str(contours[i][j][0][1])
+				minx = min(minx, contours[i][j][0][0])
+				maxx = max(maxx, contours[i][j][0][0])
+				miny = min(miny, contours[i][j][0][1])
+				maxy = max(maxy, contours[i][j][0][1])
 
-		print 'minx = ' + str(minx)
-		print 'miny = ' + str(miny)
-		print 'maxx = ' + str(maxx)
-		print 'maxy = ' + str(maxy)
+		# print 'minx = ' + str(minx)
+		# print 'miny = ' + str(miny)
+		# print 'maxx = ' + str(maxx)
+		# print 'maxy = ' + str(maxy)
 
 		#print 'type(contours[0][0]) = ' + str(type(contours[0][0][0]))
 		#print 'contours[0][0][0] = ' + str(contours[0][0][0])
 		drawing_copy = img.copy()
 		cv2.rectangle(drawing_copy,(minx,maxy),(maxx,miny),(0,255,0),2)
-		print 'drawing_copy.shape = ' + str(drawing_copy.shape)
 		cv2.imshow('bounding_box',drawing_copy)
 		cv2.waitKey(0)
 
 
 def _test():
-	num_of_images = 1
+	num_of_images = 10
 	datapath = 'C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodimages'
 	loader = ImageLoader('image_classification.csv',datapath)
 	loader.startIteration()
