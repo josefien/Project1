@@ -23,16 +23,23 @@ class BoF:
     def createBagOfWords(self):
         # Create set of all image descriptors from training image set
         # (while removing None elements)
+        tFile = open('bof_trainset.txt', 'w')
+   
         des_list = []
 
         # Start reading in images from training set
         self.loader.startIteration()
         des_list = []
-        for i in range(10): # while self.loader.hasNext():
+        for i in range(100): 
+        #i = 0
+        #while self.loader.hasNext():
             if i%25 == 0:
                 print 'Processing image no. ' + str(i)
+            #i = i + 1
             # Read in next image
             [im,classes,image_path] = self.loader.getNextImage()
+            classes_string = ','.join(classes)
+            tFile.write(image_path+'\t'+classes_string+'\n')
             # Compute descriptors
             des = self._createDescriptors(im)
             if des != None:

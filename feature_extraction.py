@@ -6,13 +6,15 @@ import BoF as bf
 import gabor_filter as gf
 import decimal
 
-
 loader = ImageLoader('image_classification.csv','C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages')
 
 # Gabor filter taken from Wim's implementation
 def gabor(classpath):
+    #lambdas = wavelengths, try some values in the range [10,20]
+    #thetas = directions, try values in the range [0,180]
     labdas = [11, 16, 21]
     thetas = [0, 45, 90]
+    # Into how many sections the image will be divided
     numrows = 3
     numcols = 3
     img = cv2.imread(classpath)
@@ -45,50 +47,58 @@ def histogram(classpath):
     green = (np.asarray(green).reshape(-1))
     blue = (np.asarray(blue).reshape(-1))
     return np.concatenate((blue,green,red))
-    #return result
 
 def apply_bof(classpath,bof_model):
     feats = bof_model.getFeaturesForThisImage(classpath)
+    #feats = extractImageFeatures(img)
     return feats
 
 # Total of 680 images in database
 if __name__ == '__main__':
+    # Initialize the BoF model
     bof_model = bof_init()
+
     #n = 10
     # File to which the feature vectors are written to
     fFile = open('features.txt', 'w')
     # File to which the classes are written to
     cFile = open('classes.txt','w')
-    
+    # File of the paths of images used for training the BoF model
+    tFile = open('bof_trainset.txt','r')
+
     all_features = []
     all_classes = []
-    loader.startIteration()
+    #loader.startIteration()
     #for i in range(n):	
-    while loader.hasNext():		
-        [img, classes, classpath] = loader.getNextImage() 
-        classes_string = ','.join(classes)
+    for line in tFile:
+    #while loader.hasNext():		
+        #[img, classes, classpath] = loader.getNextImage() 
+        info = line.split('\t')
+        classpath = info[0]
+        classpath_s = classpath.replace('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\','',1)
+        #classes_string = ','.join(classes)
+        classes_string = info[1]
+        classes_string = classpath_s + '\t' + classes_string
         all_classes.append(classes_string)
        
-        print(classpath)
-        # create feature vectors
-        # apply gabor filter
+        # Create feature vector
+        # Apply gabor filter
         gb_list = gabor(classpath)
         gb_vector = np.asarray(gb_list)
       
-        # apply BoF filter
+        # Apply BoF filter
         bf_vector = apply_bof(classpath,bof_model)
         
         # Calculate histogram
         hist_vector = histogram(classpath)
        
-        # create image feature vector by appending all feature vectors
+        # Create image feature vector by appending all vectors
         feature_vector = np.concatenate((gb_vector, bf_vector,hist_vector))
-
         all_features.append(feature_vector)
 
-    loader.closeIteration()
+    #loader.closeIteration()
     feature_matrix = np.matrix(np.array(all_features))
     np.savetxt(fFile,feature_matrix)
     for i in range(len(all_classes)):
-        cFile.write(all_classes[i] + '\n')
+        cFile.write(all_classes[i])
     #cFile.write(all_classes[-1])
