@@ -86,7 +86,6 @@ class BoF:
 
     # Extract descriptors from parameter image
     def _createDescriptors(self, img):
-        print 'type(img): ' + str(type(img))
         # Detect keypoints
         kpts = self.fea_det.detect(img)
         # Create descriptors from keypoints
