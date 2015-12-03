@@ -1,44 +1,5 @@
-from image_loader import *
-from gabor_filter import * 
 import cv2
 import numpy as np
-
-# Return 2 lists: one list of images, one list of labels
-# For now, just 10 images + labels
-def load_base():
-    loader = ImageLoader('image_classification.csv','C:/Users/Nadine/Documents/University/Uni 2015/RPMAI1/foodimages/foodimages')
-    loader.startIteration()
-    images = []
-    all_classes = []
-    for i in range(10):			#while loader.hasNext():
-        [img, classes] = loader.getNextImage() 
-        #classes_string = ', '.join(classes)
-        images.append(img)
-        all_classes.append(classes)
-        #cv2.imshow(', '.join(classes),img)
-        #cv2.waitKey(0)
-        #cv2.destroyAllWindows()
-    loader.closeIteration()
-    return images, all_classes
-
-
-# Write labels to numbers
-
-# Get features, for now: dummy feature extraction method
-
-# Transform to the right format (rows: samples, columns, features + labels (in seperate vector))
-
-# Train SVM
-
-# Predict SVM
-
-
-#
-class StatModel(object):  
-    def load(self, fn):
-        self.model.load(fn)
-    def save(self, fn):
-        self.model.save(fn)
 
 # SVM Wrapper class
 class SVM(StatModel):
@@ -56,38 +17,21 @@ class SVM(StatModel):
         #return self.model.predict_all(samples).ravel()
         return np.float32( [self.model.predict(s) for s in samples])
 
-
-# Histogram of Oriented Gradients, taken from opencv python tutorials
-def hog(img):
-    gx = cv2.Sobel(img, cv2.CV_32F, 1, 0)
-    gy = cv2.Sobel(img, cv2.CV_32F, 0, 1)
-    mag, ang = cv2.cartToPolar(gx, gy)
-
-    # quantizing binvalues in (0...16)
-    bins = np.int32(bin_n*ang/(2*np.pi))
-
-    # Divide to 4 sub-squares
-    bin_cells = bins[:10,:10], bins[10:,:10], bins[:10,10:], bins[10:,10:]
-    mag_cells = mag[:10,:10], mag[10:,:10], mag[:10,10:], mag[10:,10:]
-    hists = [np.bincount(b.ravel(), m.ravel(), bin_n) for b, m in zip(bin_cells, mag_cells)]
-    hist = np.hstack(hists)
-    return hist
+def fetchTrainLabels(class_path_file):
+	f = open(class_path_file,r)
+	labels = []
+	for line in f:
+		info = line.split('\t')
+		label = info[0]
+		labels.append(label)
+	return np.asarray(labels)
 
 if __name__ == '__main__':
-    # Load images
-
-    imgs,classes = load_base()
-    print(classes)
-
-    for img in imgs:
-        print(img)
-    # For now: first n are for training, remaining m images for testing
-
-    samples = np.array(np.random.random((10,2)), dtype = np.float32)
-    print(samples)
-    y_train = np.array([2.,0.,0.,2.,0.,1.,0.,2.,1.,2.], dtype = np.float32)
-
+    training_features = np.loadtxt('training_feature_Boterhammen.txt')
+    training_labels = fetchTrainLabels('training_label_Boterhammen.txt')
+    print(training_labels)
     clf = SVM()
-    clf.train(samples, y_train)
-    y_val = clf.predict(samples)
-    print(y_val)
+    clf.train(training_features, training_labels)
+    test_features = np.loadtxt('test_feature_Boterhammen.txt')
+    pred_labels = clf.predict(test_features)
+    print(pred_labels)

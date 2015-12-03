@@ -53,7 +53,6 @@ def apply_bof(classpath,bof_model):
     #feats = extractImageFeatures(img)
     return feats
 
-# Total of 680 images in database
 if __name__ == '__main__':
     # Initialize the BoF model
     bof_model = bof_init()
