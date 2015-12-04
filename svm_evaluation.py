@@ -22,9 +22,16 @@ def svm_evaluation(filename):
                 right_found_labels = right_found_labels+1
                 
         line = f.readline()
-    precision = float(right_found_labels)/float(found_labels)
-    recall = float(right_found_labels)/float(right_labels)
+    if(found_labels == 0):
+        precision = 'N/A'
+    else:
+        precision = float(right_found_labels)/float(found_labels)
+    if(right_labels == 0):
+        recall = 'N/A'
+    else:
+        recall = float(right_found_labels)/float(right_labels)
+    print 'recall'
     print recall
+    print 'precision'
     print precision
-        
-svm_evaluation("result.txt")
+    

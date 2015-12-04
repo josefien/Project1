@@ -55,9 +55,8 @@ def apply_bof(classpath,bof_model):
 
 if __name__ == '__main__':
     # Initialize the BoF model
-    bof_model = bof_init()
+    # bof_model = bof_init()
 
-    #n = 10
     # File to which the feature vectors are written to
     fFile = open('features.txt', 'w')
     # File to which the classes are written to
@@ -67,17 +66,19 @@ if __name__ == '__main__':
 
     all_features = []
     all_classes = []
-    #loader.startIteration()
-    #for i in range(n):	
-    for line in tFile:
+    loader.startIteration()
+    for i in range(2000):	
+    #for line in tFile:
     #while loader.hasNext():		
-        #[img, classes, classpath] = loader.getNextImage() 
-        info = line.split('\t')
-        classpath = info[0]
-        classpath_s = classpath.replace('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\','',1)
-        #classes_string = ','.join(classes)
-        classes_string = info[1]
-        classes_string = classpath_s + '\t' + classes_string
+        [img, classes, classpath] = loader.getNextImage() 
+        #info = line.split('\t')
+        #classpath = info[0]
+        #classes_string = info[1]
+        classes_string = ','.join(classes)
+        
+        classpath_s = classpath.replace('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\','',1) 
+        #classes_string = classpath_s + '\t' + classes_string 
+        classes_string = classpath_s + '\t' + classes_string + '\n'
         all_classes.append(classes_string)
        
         # Create feature vector
@@ -86,16 +87,17 @@ if __name__ == '__main__':
         gb_vector = np.asarray(gb_list)
       
         # Apply BoF filter
-        bf_vector = apply_bof(classpath,bof_model)
+        # bf_vector = apply_bof(classpath,bof_model)
         
         # Calculate histogram
         hist_vector = histogram(classpath)
        
         # Create image feature vector by appending all vectors
-        feature_vector = np.concatenate((gb_vector, bf_vector,hist_vector))
+        #feature_vector = np.concatenate((gb_vector, bf_vector,hist_vector))
+        feature_vector = np.concatenate((gb_vector, hist_vector))
         all_features.append(feature_vector)
 
-    #loader.closeIteration()
+    loader.closeIteration()
     feature_matrix = np.matrix(np.array(all_features))
     np.savetxt(fFile,feature_matrix)
     for i in range(len(all_classes)):

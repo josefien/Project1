@@ -30,7 +30,7 @@ class BoF:
         # Start reading in images from training set
         self.loader.startIteration()
         des_list = []
-        for i in range(1000): 
+        for i in range(10): 
         #i = 0
         #while self.loader.hasNext():
             if i%25 == 0:
