@@ -67,9 +67,9 @@ if __name__ == '__main__':
     all_features = []
     all_classes = []
     loader.startIteration()
-    for i in range(2000):	
+    #for i in range(2000):	
     #for line in tFile:
-    #while loader.hasNext():		
+    while loader.hasNext():		
         [img, classes, classpath] = loader.getNextImage() 
         #info = line.split('\t')
         #classpath = info[0]
