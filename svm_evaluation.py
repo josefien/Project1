@@ -13,7 +13,7 @@ def svm_evaluation(filename):
     right_found_labels = 0
     line = f.readline()
     while line:
-        split = re.sub("\n","",line).split(' ')
+        split = re.sub("\r|\n","",line).split(' ')
         if int(split[0]) == 1:
             right_labels = right_labels+1
         if int(split[1]) == 1:
@@ -22,9 +22,17 @@ def svm_evaluation(filename):
                 right_found_labels = right_found_labels+1
                 
         line = f.readline()
-    precision = float(right_found_labels)/float(found_labels)
-    recall = float(right_found_labels)/float(right_labels)
+    if(found_labels == 0):
+        precision = 'N/A'
+    else:
+        precision = float(right_found_labels)/float(found_labels)
+    if(right_labels == 0):
+        recall = 'N/A'
+    else:
+        recall = float(right_found_labels)/float(right_labels)
+    print 'recall'
     print recall
+    print 'precision'
     print precision
-        
-svm_evaluation("result.txt")
+    
+svm_evaluation('result.txt')

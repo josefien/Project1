@@ -55,3 +55,8 @@ def create_data_sets(labelfile, featurefile):
         origin_label.close()
         origin_feature.close()
         
+if __name__ == '__main__':
+    labelfile = 'C:\\Users\\Nadine\\git\\Project1\\classes.txt'
+    featurefile = 'C:\\Users\\Nadine\\git\\Project1\\features.txt'
+    create_data_sets(labelfile,featurefile)
+

@@ -19,7 +19,6 @@ class GaborFilter:
 
     # Create set of Gabor kernels once and store it
     def __createGaborKernels(self, labdas, thetas):
-        print('at createGaborKernels')
         self.__kernels = [None] * len(labdas) * len(thetas)
         k = 0
         for i in xrange(len(labdas)):
@@ -33,8 +32,8 @@ class GaborFilter:
         rowHeight = image.shape[1]/self.__numOfRows
         colWidth = image.shape[0]/self.__numOfCols
 
-        print('rowHeight: ',rowHeight)
-        print('colWidth: ',colWidth)
+        #print('rowHeight: ',rowHeight)
+        #print('colWidth: ',colWidth)
 
         # Vectors into which we will store Gabor filter information
         # for each channel (each combination of orientation and wavelength)

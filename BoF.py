@@ -23,16 +23,23 @@ class BoF:
     def createBagOfWords(self):
         # Create set of all image descriptors from training image set
         # (while removing None elements)
+        tFile = open('bof_trainset.txt', 'w')
+   
         des_list = []
 
         # Start reading in images from training set
         self.loader.startIteration()
         des_list = []
-        for i in range(10): # while self.loader.hasNext():
+        for i in range(10): 
+        #i = 0
+        #while self.loader.hasNext():
             if i%25 == 0:
                 print 'Processing image no. ' + str(i)
+            #i = i + 1
             # Read in next image
             [im,classes,image_path] = self.loader.getNextImage()
+            classes_string = ','.join(classes)
+            tFile.write(image_path+'\t'+classes_string+'\n')
             # Compute descriptors
             des = self._createDescriptors(im)
             if des != None:
@@ -79,7 +86,6 @@ class BoF:
 
     # Extract descriptors from parameter image
     def _createDescriptors(self, img):
-        print 'type(img): ' + str(type(img))
         # Detect keypoints
         kpts = self.fea_det.detect(img)
         # Create descriptors from keypoints
@@ -136,7 +142,7 @@ class BoF:
 
 def _test():
     # Path to image data set
-    datapath = 'C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodimages'
+    datapath = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages'
     # Size of vocabulary of visual features/words
     vocab_size = 50
     # Create image loader to be passed to BoF instance
@@ -148,7 +154,7 @@ def _test():
     bof.createBagOfWords()
 
     # Path to test image
-    test_datapath = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'
+    # test_datapath = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'
     loader.startIteration()
     # Load the image
     [img,classes,image_path] = loader.getNextImage()
@@ -156,7 +162,7 @@ def _test():
     # Extract features from test image according to defined vocabulary
     feats = bof.extractImageFeatures(img)
     # Print extracted features
-    print 'features for image:\n' + str(bof.getFeaturesForThisImage('C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'))
+    print 'features for image:\n' + str(bof.getFeaturesForThisImage('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'))
 
 
 def main():
