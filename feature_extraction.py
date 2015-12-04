@@ -40,13 +40,13 @@ def histogram(classpath):
     # Histogram size
     bin = 64
     img = cv2.imread(classpath)
-    blue = cv2.calcHist([img],[0],None,[bin],[0,256])
-    green = cv2.calcHist([img],[0],None,[bin],[0,256])
-    red = cv2.calcHist([img],[0],None,[bin],[0,256])
-    red = (np.asarray(red).reshape(-1))
-    green = (np.asarray(green).reshape(-1))
-    blue = (np.asarray(blue).reshape(-1))
-    return np.concatenate((blue,green,red))
+    channels = cv2.split(img)
+    features = []
+    for chan in channels:
+        hist = cv2.calcHist([chan],[0],None,[bin],[0,256])
+        hist = np.asarray(hist).reshape(-1)
+        features = np.concatenate((features,hist))
+    return features
 
 def apply_bof(classpath,bof_model):
     feats = bof_model.getFeaturesForThisImage(classpath)
