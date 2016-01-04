@@ -15,10 +15,11 @@ class SVM(StatModel):
 
     def train(self, samples, responses):
         #setting algorithm parameters
-        params = dict( kernel_type = cv2.SVM_LINEAR, 
-                       degree = 1,
-                       gamma = 5,
+        params = dict( kernel_type = cv2.SVM_RBF, 
+                       degree = 2,
+                       gamma = 1,
                        coef0 = 1,
+                       #nu = 0.4,
                        svm_type = cv2.SVM_C_SVC,
                        C = 2 )
         self.model.train(samples, responses, params = params)
@@ -38,7 +39,7 @@ def fetchLabels(class_path_file):
 
 if __name__ == '__main__':
     labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
-    label = labels[0]
+    label = labels[7]
     print(label)
     training_features = np.loadtxt('training_feature_'+label+'.txt',np.float32)
     training_labels = fetchLabels('training_label_'+label+'.txt')
