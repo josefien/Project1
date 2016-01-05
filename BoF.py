@@ -11,8 +11,8 @@ class BoF:
         self.vocab_size = vocab_size
 
         # Create feature detection and keypoint extractor objects (from OpenCV)
-        self.fea_det = cv2.FeatureDetector_create("SIFT")
-        self.des_ext = cv2.DescriptorExtractor_create("SIFT")
+        self.fea_det = cv2.FeatureDetector_create("SURF")
+        self.des_ext = cv2.DescriptorExtractor_create("SURF")
 
         # Feature dictionary that will allow the lookup of the computed
         # feature histogram for a given feature
