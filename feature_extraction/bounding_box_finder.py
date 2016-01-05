@@ -1,7 +1,8 @@
+import sys
+sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/Code/food/util')
 import cv2
 from image_loader import *
 import numpy as np
-import sys
 
 contours_returned = 5
 
