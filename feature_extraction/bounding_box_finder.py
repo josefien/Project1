@@ -65,8 +65,8 @@ class BoundingBoxFinder:
 
 def _test():
 	num_of_images = 20
-	datapath = ''
-	loader = ImageLoader('image_classification.csv',datapath)
+	datapath = 'C:/Users/Wim/Documents/AIDKE/Project 1/Data set/foodimages/foodimages'
+	loader = ImageLoader('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/image_classification.csv',datapath)
 	loader.startIteration()
 	# Load images and perform bounding box operation
 	for i in xrange(num_of_images):
