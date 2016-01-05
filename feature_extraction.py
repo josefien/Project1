@@ -6,7 +6,7 @@ import BoF as bf
 import gabor_filter as gf
 import decimal
 
-loader = ImageLoader('image_classification.csv','C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages')
+loader = ImageLoader('image_classification.csv','C:\Users\Wim\Documents\AIDKE\Project 1\Data set\\foodimages\\foodimages')
 
 # Gabor filter taken from Wim's implementation
 def gabor(classpath):
@@ -27,7 +27,7 @@ def gabor(classpath):
 def bof_init():
     # Size of vocabulary of visual features/words
     # Try 500 to start with
-    vocab_size = 50
+    vocab_size = 500
     
     # Create BoF instance
     bof = bf.BoF(loader,vocab_size)

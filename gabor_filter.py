@@ -12,7 +12,6 @@ class GaborFilter:
 
     # Create Gabor filter with parameter wavelengths and orientations
     def __init__(self, labdas, thetas, numrows, numcols):
-        print('creating object')
         self.__createGaborKernels(labdas, thetas)
         self.__numOfRows = numrows
         self.__numOfCols = numcols
