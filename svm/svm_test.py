@@ -1,3 +1,7 @@
+import sys
+sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/Code/food/util')
+sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/Code/food/feature_extraction')
+
 from image_loader import *
 from gabor_filter import * 
 import cv2
