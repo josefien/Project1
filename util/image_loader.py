@@ -9,10 +9,11 @@ import re
 #	@author corth
 
 class ImageLoader:
-
+	__full_image_path = None
 	__table = None	#file-object
 	__img = None	#next image to provide
 	__classes = []	#classes/categories concerning the next image
+     
 	
 	##	Constructor
 	#	tablePath - path to csv-table with lables
@@ -29,7 +30,7 @@ class ImageLoader:
 	def startIteration(self):
 		self.closeIteration();
 		self.__table = open(self.__tp, 'r')
-		line = self.__table.readline()
+		self.__table.readline()
 		self.__loadNextImage();
 		
 	##	returns if there is at least one image left
@@ -56,11 +57,12 @@ class ImageLoader:
 		self.__img = None	# reset next image
 		self.__classes = None
 		line = self.__table.readline()
+		print line
 		while line:	#look for a valid line
 			line = re.sub("\n|\"|'","",line).split(',') # split row in cells (in csv devided by ','
 			path = self.__ip+line[0]+os.path.sep	# concatenated imagepath from table
 			for filename in os.listdir(path ):	# is there a matching file?
-				if line[1].replace(':','_') in filename:
+				if line[1] in filename:
 					self.__full_image_path = path+filename
 					self.__img = cv2.imread(path+filename)	# matching file found
 					self.__classes = line[3].split(' ')
