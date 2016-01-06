@@ -1,11 +1,13 @@
 import sys
-sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/Code/food/util')
+sys.path.append('C:\Users\Wim\Documents\AIDKE\Project 1\Code\\food\util')
 import cv2
 import numpy as np
 import os
 from scipy.cluster.vq import *
 from sklearn.preprocessing import StandardScaler
 from image_loader import *
+
+instances = 5000
 
 class BoF:
     def __init__(self, loader, vocab_size):
@@ -15,6 +17,8 @@ class BoF:
         # Create feature detection and keypoint extractor objects (from OpenCV)
         self.fea_det = cv2.FeatureDetector_create("SURF")
         self.des_ext = cv2.DescriptorExtractor_create("SURF")
+
+        self.surf = cv2.SURF(2500)
 
         # Feature dictionary that will allow the lookup of the computed
         # feature histogram for a given feature
@@ -32,10 +36,10 @@ class BoF:
         # Start reading in images from training set
         self.loader.startIteration()
         des_list = []
-        for i in range(10): 
+        for i in range(instances): 
         #i = 0
         #while self.loader.hasNext():
-            if i%25 == 0:
+            if i%50 == 0:
                 print 'Processing image no. ' + str(i)
             #i = i + 1
             # Read in next image
@@ -67,7 +71,7 @@ class BoF:
         for i in range(len(self._im_features)):
             self.feat_dict[des_list[i][0]] = self._im_features[i]
 
-        print 'dict keys:\n' + str(self.feat_dict.keys())
+        #print 'dict keys:\n' + str(self.feat_dict.keys())
 
 
     def getFeatureSet(self):
@@ -76,36 +80,44 @@ class BoF:
     # Retrieve the histogram of features for the parameter image
     # which is from the training set. Not to be confused with the extractImageFeatures() method.
     def getFeaturesForThisImage(self,image_path):
+        #for key, _ in self.feat_dict.iteritems():
+        #    print "key: " + str(key) + "\n"
         return self.feat_dict[image_path]
 
     # Compute unstandardized feature histogram for a new, previously unseen image
     # based on vocabulary of visual words defined over training image set
     def extractImageFeatures(self, img):
         print 'getting test image features...'
-        des = self._createDescriptors(img)
+        #des = self._createDescriptors(img)
+        _, des = self.surf.detectAndCompute(img,None)
         hist = self._createHistOfFeatures(des)
         return hist
 
     # Extract descriptors from parameter image
     def _createDescriptors(self, img):
         # Detect keypoints
-        kpts = self.fea_det.detect(img)
+        #kpts = self.fea_det.detect(img)
+        
         # Create descriptors from keypoints
-        _, des = self.des_ext.compute(img, kpts)
+        #_, des = self.des_ext.compute(img, kpts)
+        _, des = self.surf.detectAndCompute(img, None)
         return des
 
     # Perform k-means clustering on descriptor set of training image set
     def _clusterVisualWords(self, des_list, k):
         # Stack all the descriptors vertically in a numpy array
         descriptors = des_list[0][1]
+        descriptor_matrix = np.zeros((instances, self.vocab_size))
         i = 0
         for _, descriptor in des_list[1:]:
             #print str(len(descriptor))
             #print 'currently at: ' + str(i)
-            #i = i + 1
+            i = i + 1
             if descriptor != None:
+                #descriptor_matrix[i][:] = descriptor
                 descriptors = np.vstack((descriptors, descriptor))
         # vocab is the vocabulary of visual "words" or descriptors
+        print "descriptors.shape: " + str(descriptors.shape)
         vocab, variance = kmeans(descriptors, k, 1)
         return vocab, variance
 
@@ -144,11 +156,11 @@ class BoF:
 
 def _test():
     # Path to image data set
-    datapath = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages'
+    datapath = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages'
     # Size of vocabulary of visual features/words
-    vocab_size = 50
+    vocab_size = 500
     # Create image loader to be passed to BoF instance
-    loader = ImageLoader('image_classification.csv',datapath)
+    loader = ImageLoader('C:\Users\Wim\Documents\AIDKE\Project 1\New Code\image_classification.csv',datapath)
     
     # Create BoF instance
     bof = BoF(loader,vocab_size)
@@ -163,8 +175,9 @@ def _test():
     loader.closeIteration()
     # Extract features from test image according to defined vocabulary
     feats = bof.extractImageFeatures(img)
+    print 
     # Print extracted features
-    print 'features for image:\n' + str(bof.getFeaturesForThisImage('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages\\pp1\\26.11.2013 13_47_00.jpg'))
+    print 'features for image:\n' + str(bof.getFeaturesForThisImage('C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages\\pp1\\25.11.2013 11_14_29.jpg'))
 
 
 def main():
