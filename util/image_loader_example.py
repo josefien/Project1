@@ -8,6 +8,8 @@ loader = ImageLoader('image_classification.csv','C:/Users/Nadine/Documents/Unive
 loader.startIteration()
 for i in range(10):			#while loader.hasNext():
 	[img, classes,classpath] = loader.getNextImage()
+	print(classes)
+	print(classpath)
 	cv2.imshow(', '.join(classes),img)
 	cv2.waitKey(0)
 	cv2.destroyAllWindows()
