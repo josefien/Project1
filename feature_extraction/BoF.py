@@ -7,7 +7,7 @@ from scipy.cluster.vq import *
 from sklearn.preprocessing import StandardScaler
 from image_loader import *
 
-instances = 5000
+instances = 100
 
 class BoF:
     def __init__(self, loader, vocab_size):
@@ -18,7 +18,7 @@ class BoF:
         self.fea_det = cv2.FeatureDetector_create("SURF")
         self.des_ext = cv2.DescriptorExtractor_create("SURF")
 
-        self.surf = cv2.SURF(2500)
+        self.surf = cv2.SURF(4500)
 
         # Feature dictionary that will allow the lookup of the computed
         # feature histogram for a given feature
@@ -36,12 +36,13 @@ class BoF:
         # Start reading in images from training set
         self.loader.startIteration()
         des_list = []
-        for i in range(instances): 
-        #i = 0
-        #while self.loader.hasNext():
-            if i%50 == 0:
-                print 'Processing image no. ' + str(i)
-            #i = i + 1
+        empty_feature_list = []
+        #for i in range(instances):
+        i = 0
+        while self.loader.hasNext():
+            if i%1000 == 0:
+                print 'BoF processing image no. ' + str(i)
+            i = i + 1
             # Read in next image
             [im,classes,image_path] = self.loader.getNextImage()
             classes_string = ','.join(classes)
@@ -51,6 +52,8 @@ class BoF:
             if des != None:
                 # Store descriptors
                 des_list.append((image_path, des))
+            else:
+                empty_feature_list.append(image_path)
         self.loader.closeIteration()
 
         # Cluster descriptors to create "vocabulary" of visual words
@@ -71,6 +74,10 @@ class BoF:
         for i in range(len(self._im_features)):
             self.feat_dict[des_list[i][0]] = self._im_features[i]
 
+        # Add zero entries for images where no features could be detected
+        for i in range(len(empty_feature_list)):
+            self.feat_dict[empty_feature_list[i]] = np.zeros((self.vocab_size,))
+
         #print 'dict keys:\n' + str(self.feat_dict.keys())
 
 
@@ -87,7 +94,7 @@ class BoF:
     # Compute unstandardized feature histogram for a new, previously unseen image
     # based on vocabulary of visual words defined over training image set
     def extractImageFeatures(self, img):
-        print 'getting test image features...'
+        #print 'getting test image features...'
         #des = self._createDescriptors(img)
         _, des = self.surf.detectAndCompute(img,None)
         hist = self._createHistOfFeatures(des)
