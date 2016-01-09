@@ -4,6 +4,7 @@ import feature_extraction as feat_ext
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+import Scikit_SVM
 
 dataset_path = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages'
 
@@ -27,15 +28,15 @@ class StratifiedCrossValidator(object):
 	# Divide labels/responses into n stratified folds.
 	# Stratification means that each folds has approximately the same distribution of labels/responses.
 	# StratifiedKFold is a built-in class in Scikit-learn.
-	def _stratify(self, n_folds):
-		self.fold_indices = StratifiedKFold(self.y, n_folds)
+	def _stratify(self):
+		self.fold_indices = StratifiedKFold(self.y, self.n_folds)
 
 	# Main loop of the cross-validation algorithm. Data is loaded and stratified; classifier is
 	# trained and tested on each k-fold stratified data set.
 	# Finally, the average of the attained scores is returned.
-	def run(self, classifier):
+	def run(self):
 		self._load_data('standard')
-		self._stratify(self.n_folds)
+		self._stratify()
 		scores = []
 		for train, test in self.fold_indices:
 			# Assign training and test data sets based on fold indices
@@ -51,3 +52,9 @@ class StratifiedCrossValidator(object):
 			scores.append(kth_classifier.score(test_data,test_response))
 
 		return np.average(scores)
+
+if __name__ == '__main__':
+	kernel = Scikit_SVM.getChi2Kernel(0.5)
+	clf = Scikit_SVM(kernel)
+	validator = StratifiedCrossValidator(clf)
+	validator.run()

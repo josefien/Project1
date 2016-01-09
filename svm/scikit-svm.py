@@ -45,17 +45,17 @@ class Scikit_SVM:
 		to argument value.
 	"""
 	@staticmethod
-	def getChi2Kernel(self,gamma_val):
+	def getChi2Kernel(gamma_val):
 		return functools.partial(chi2_kernel,gamma=gamma_val)
 
 	"""Returns a linear kernel"""
 	@staticmethod
-	def getLinearKernel(self):
+	def getLinearKernel():
 		return linear_kernel
 
 	"""Returns a polynomial kernel with parameters set to argument values"""
 	@staticmethod
-	def getPolyKernel(self,coef0,degree):
+	def getPolyKernel(coef0,degree):
 		return functools.partial(polynomial_kernel,coef0=coef0,degree=degree)
 
 # Reads the feature- and label-file and duplicates all the
