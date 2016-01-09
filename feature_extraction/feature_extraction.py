@@ -8,7 +8,8 @@ import BoF as bf
 import gabor_filter as gf
 import decimal
 
-loader = ImageLoader('../image_classification.csv','C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages')
+path_to_images = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\grabcut'
+loader = ImageLoader('../image_classification.csv',path_to_images)
 
 # Gabor filter taken from Wim's implementation
 def gabor(classpath):
@@ -78,7 +79,7 @@ if __name__ == '__main__':
         classes_string = info[1]
         #classes_string = ','.join(classes)
         
-        classpath_s = classpath.replace('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\','',1)
+        classpath_s = classpath.replace(path_to_images,'',1)
         classes_string = classpath_s + '\t' + classes_string 
         #classes_string = classpath_s + '\t' + classes_string + '\n'
         all_classes.append(classes_string)
