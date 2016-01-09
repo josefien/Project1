@@ -57,12 +57,12 @@ class ImageLoader:
 		self.__img = None	# reset next image
 		self.__classes = None
 		line = self.__table.readline()
-		print line
+		#print line
 		while line:	#look for a valid line
 			line = re.sub("\n|\"|'","",line).split(',') # split row in cells (in csv devided by ','
 			path = self.__ip+line[0]+os.path.sep	# concatenated imagepath from table
 			for filename in os.listdir(path ):	# is there a matching file?
-				if line[1] in filename:
+				if line[1].replace(':','_') in filename:
 					self.__full_image_path = path+filename
 					self.__img = cv2.imread(path+filename)	# matching file found
 					self.__classes = line[3].split(' ')
