@@ -52,24 +52,27 @@ class StratifiedCrossValidator(object):
 		scores = []
 		i = 1
 		for train, test in self.fold_indices:
+			print('Start classifier no. {}...'.format(i))
 			# Assign training and test data sets based on fold indices
 			training_data, training_response, test_data, test_response = self.scaled_data[train], self.y[train], self.scaled_data[test], self.y[test]
 
-			print('Training classifier number {}\n'.format(i))
+			print('Training classifier number {}'.format(i))
 			# Train classifier
 			self.clf.train(training_data,training_response)
 
-			print('Testing classifier number {}\n'.format(i))
+			print('Testing classifier number {}'.format(i))
 			# Test classifier and store its performance score on the test data set
 			scores.append(self.clf.score(test_data,test_response))
 
 			i = i + 1
+		print("scores:\n{}".format(scores))
 		return np.average(scores)
 
 def test():
-	kernel = Scikit_SVM.getChi2Kernel(0.5)
+	kernel = Scikit_SVM.getLinearKernel()
 	clf = Scikit_SVM(kernel)
-	validator = StratifiedCrossValidator(5,clf)
+	validator = StratifiedCrossValidator(10,clf)
 	print('average accuracy: {}'.format(validator.run()))
 
 if __name__ == '__main__':
+	test()
