@@ -13,20 +13,28 @@ class SVM(StatModel):
     def __init__(self):
         self.model = cv2.SVM()
 
-    def train(self, samples, responses):
+    # Training the model
+    def fit(self, samples, responses):
         #setting algorithm parameters
         params = dict( kernel_type = cv2.SVM_RBF, 
-                       degree = 2,
+                       degree = 1,
                        gamma = 1,
                        coef0 = 1,
                        #nu = 0.4,
                        svm_type = cv2.SVM_C_SVC,
-                       C = 2 )
+                       C = 1 )
         self.model.train(samples, responses, params = params)
 
     def predict(self, samples):
         #return self.model.predict_all(samples).ravel()
         return np.float32( [self.model.predict(s) for s in samples])
+
+    def score(test_data, test_responses):
+        # Predict labels
+        pred_labels = predict(test_data)
+        # Calculate [precision,recall]
+        performance = []
+            
 
 def fetchLabels(class_path_file):
 	f = open(class_path_file,'r')

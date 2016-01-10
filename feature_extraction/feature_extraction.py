@@ -1,5 +1,5 @@
 import sys
-sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/Code/food/util')
+sys.path.append('C:/Users/Nadine/git/Project1/util')
 from image_loader import *
 import cv2
 import numpy as np
@@ -8,7 +8,8 @@ import BoF as bf
 import gabor_filter as gf
 import decimal
 
-loader = ImageLoader('C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\New Code\\image_classification.csv','C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages')
+path_to_images = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\grabcut'
+loader = ImageLoader('../image_classification.csv',path_to_images)
 
 # Gabor filter taken from Wim's implementation
 def gabor(classpath):
@@ -46,7 +47,8 @@ def histogram(classpath):
     channels = cv2.split(img)
     features = []
     for chan in channels:
-        hist = cv2.calcHist([chan],[0],None,[bin],[0,256])
+        hist = cv2.calcHist([chan],[0],None,[bin],[1,256])
+        hist = hist/np.sum(hist)
         hist = np.asarray(hist).reshape(-1)
         features = np.concatenate((features,hist))
     return features
@@ -59,7 +61,7 @@ def apply_bof(classpath,bof_model):
 if __name__ == '__main__':
     # Initialize the BoF model
     bof_model = bof_init()
-
+    
     # File to which the feature vectors are written to
     fFile = open('features.txt', 'w')
     # File to which the classes are written to
@@ -77,7 +79,7 @@ if __name__ == '__main__':
         classes_string = info[1]
         #classes_string = ','.join(classes)
         
-        classpath_s = classpath.replace('C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\','',1)
+        classpath_s = classpath.replace(path_to_images,'',1)
         classes_string = classpath_s + '\t' + classes_string 
         #classes_string = classpath_s + '\t' + classes_string + '\n'
         all_classes.append(classes_string)
