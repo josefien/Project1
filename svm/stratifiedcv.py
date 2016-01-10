@@ -39,7 +39,8 @@ class StratifiedCrossValidator(object):
 	# trained and tested on each k-fold stratified data set.
 	# Finally, the average of the attained scores is returned.
 	def run(self):
-		self._load_data('standard')
+		datasets = ['standard','grabcut','hsl_grabcut','hsv_grabcut','rgb_grabcut']
+		self._load_data(datasets[0])
 
 		print('Normalizing data...')
 		# Scale/normalize data to [0,1] range.
