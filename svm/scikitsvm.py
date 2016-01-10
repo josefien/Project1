@@ -20,8 +20,9 @@ class Scikit_SVM:
 	# dataset: string of which dataset will be used for the SVM (determines 
 	# which feature and label files will be loaded)
 	def load_data(self,dataset):
-		inputFeatures = '../features/' + dataset + '_features.txt'
-		inputLabels = '../features/' + dataset + '_classes.txt'
+		print("SVM is loading data...")
+		inputFeatures = '../feature_extraction/' + dataset + '_features.txt'
+		inputLabels = '../feature_extraction/' + dataset + '_classes.txt'
 		X,y = adjustFeatures(inputFeatures,inputLabels)
 		return (X,y)
 
@@ -41,6 +42,7 @@ class Scikit_SVM:
 	"""
 	def score(self,test_samples,test_responses):
 		return self.svm.score(test_samples,test_responses)
+		
 	""" Returns a chi-squared kernel where parameter gamma has been set
 		to argument value.
 	"""
