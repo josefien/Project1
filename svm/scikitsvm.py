@@ -10,15 +10,17 @@ from itertools import izip
 
 class Scikit_SVM:
 
-	def __init__(self,kernel):
-		self.kernel = kernel
+	""" Set up an SVM with given kernel and penalty parameter C """
+	def __init__(self,kernel,C=1.0):
+		self.svm = SVC(kernel=kernel,C=C)
 
-	# Reads files outputted by feature_extraction.py
-	# features.txt contains per line the feature array of the image
-	# classes.txt contains the image path and the labels (as strings)
-	# Each line corresponds to the same image
-	# dataset: string of which dataset will be used for the SVM (determines 
-	# which feature and label files will be loaded)
+	""" Reads files outputted by feature_extraction.py
+	features.txt contains per line the feature array of the image
+	classes.txt contains the image path and the labels (as strings)
+	Each line corresponds to the same image
+	dataset: string of which dataset will be used for the SVM (determines 
+	which feature and label files will be loaded)
+	"""
 	def load_data(self,dataset):
 		print("SVM is loading data...")
 		inputFeatures = '../feature_extraction/' + dataset + '_features.txt'
@@ -26,11 +28,13 @@ class Scikit_SVM:
 		X,y = adjustFeatures(inputFeatures,inputLabels)
 		return (X,y)
 
+	""" Train the SVM using given samples and responses """
 	def train(self,samples,responses):
-		self.svm = SVC(kernel=self.kernel).fit(samples,responses)
+		self.svm = self.svm.fit(samples,responses)
 		# Make sure we get the one-vs-rest style output that we want
 		self.svm.decision_function_shape = "ovr"
 
+	""" Use the classifier to classify given feature vectors """
 	def predict(self,samples):
 		return np.float32( [self.svm.predict(s) for s in samples])
 
@@ -57,17 +61,23 @@ class Scikit_SVM:
 
 	"""Returns a polynomial kernel with parameters set to argument values"""
 	@staticmethod
-	def getPolyKernel(coef0,degree):
-		return functools.partial(polynomial_kernel,coef0=coef0,degree=degree)
+	def getPolyKernel(coef0_val,degree_val):
+		return functools.partial(polynomial_kernel,coef0=coef0_val,degree=degree_val)
 
-# Reads the feature- and label-file and duplicates all the
-# images with multiple labels. For example
-# [f e a t u r e] - label1, label2, label3
-# becomes
-# [f e a t u r e] - label1
-# [f e a t u r e] - label2
-# [f e a t u r e] - label3
-# Returns both extended feature matrix and label vector
+	""" Returns an RBF kernel with parameter gamma set to given value """
+	@staticmethod
+	def getRBFKernel(gamma_val):
+		return functools.partial(rbf_kernel,gamma=gamma_val)
+
+""" Reads the feature- and label-file and duplicates all the
+images with multiple labels. For example
+[f e a t u r e] - label1, label2, label3
+becomes
+[f e a t u r e] - label1
+[f e a t u r e] - label2
+[f e a t u r e] - label3
+Returns both extended feature matrix and label vector
+"""
 def adjustFeatures(feature_file,label_file):
 	all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
 	ff = open(feature_file,'r')
@@ -106,12 +116,12 @@ if __name__ == '__main__':
 	gammas.append(0.5)
 	kernels=[]
 	for gm in gammas:
-		kernels.append(getChi2Kernel(gm))
+		kernels.append(Scikit_SVM.getLinearKernel())
 
 	# Load data
-	X = np.loadtxt('features.txt',np.float32)
-
+	X = np.loadtxt('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/feature_extraction/standard_features.txt',np.float32)
+	y = np.loadtxt('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/feature_extraction/standard_classes.txt',np.float32)
 
 	for ker in kernels:
-		svm = Scikit-SVM(ker)
-		svm.train(data,responses)
+		svm = Scikit_SVM(ker,1.0)
+		svm.train(X,y)
