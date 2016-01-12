@@ -15,13 +15,16 @@ dataset_path = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimage
 
 all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
 
-# Class that runs stratified k-fold cross validation on a data set.
+""" Class that runs stratified k-fold cross validation on a data set
+	whose name is given by parameter string 'dataset'.
+"""
 class StratifiedCrossValidator(object):
 	"""docstring for StratifiedCrossValidator"""
-	def __init__(self,n_folds,clf):
+	def __init__(self,n_folds,clf,dataset):
 		super(StratifiedCrossValidator, self).__init__()
 		self.clf = clf
 		self.n_folds = n_folds
+		self.dataset = dataset
 		print("Setting up validator...")
 
 	# Ask the classifier to provide the data and response values that will be used to train
@@ -44,7 +47,7 @@ class StratifiedCrossValidator(object):
 	# trained and tested on each k-fold stratified data set.
 	# Finally, the average of the attained scores is returned.
 	def run(self):
-		self._load_data('standard')
+		self._load_data(self.dataset)
 
 		print('Normalizing data...')
 		# Scale/normalize data to [0,1] range.
@@ -104,4 +107,4 @@ def test_entire_pipeline():
 	output_util.plot_confusion_matrix(norm_cm,all_labels,title='Normalized Confusion Matrix')
 
 if __name__ == '__main__':
-	test_cm_plotting()
+	test_entire_pipeline()
