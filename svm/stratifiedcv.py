@@ -5,10 +5,15 @@ import feature_extraction as feat_ext
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.pipeline import Pipeline
 from scikitsvm import Scikit_SVM
+from sklearn.metrics import confusion_matrix
 import numpy as np
 import data_preprocessing
+import output_util
+import matplotlib.pyplot as plt
 
 dataset_path = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages'
+
+all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
 
 # Class that runs stratified k-fold cross validation on a data set.
 class StratifiedCrossValidator(object):
@@ -50,6 +55,7 @@ class StratifiedCrossValidator(object):
 		scaler, self.scaled_data = data_preprocessing.getScaler(self.X)
 		self._stratify()
 		scores = []
+		confusion_matrices = []
 		i = 1
 		for train, test in self.fold_indices:
 			print('Start classifier no. {}...'.format(i))
@@ -60,19 +66,42 @@ class StratifiedCrossValidator(object):
 			# Train classifier
 			self.clf.train(training_data,training_response)
 
+			# Predict labels for computing confusion matrix
+			test_prediction = self.clf.predict(test_data)
+
+			# Compute confusion matrix for this fold
+			confusion_matrices.append(confusion_matrix(test_response,test_prediction))
+
 			print('Testing classifier number {}'.format(i))
 			# Test classifier and store its performance score on the test data set
 			scores.append(self.clf.score(test_data,test_response))
 
 			i = i + 1
+		# Print the average accuracy (over all labels) for each fold
 		print("scores:\n{}".format(scores))
-		return np.average(scores)
 
-def test():
+		return self._compileConfusionMatrices(confusion_matrices)
+
+	def _compileConfusionMatrices(self,matrices):
+		matrix_sum = matrices.pop()
+		for matrix in matrices:
+			matrix_sum = np.add(matrix_sum,matrix)
+		return matrix_sum
+
+""" Function for testing the plotting of the normalized confusion matrix """
+def test_cm_plotting():
+	non_normalized_cm = np.loadtxt('confusion_matrix.txt',np.float32)
+	cm_normalized = non_normalized_cm.astype('float') / non_normalized_cm.sum(axis=1)[:, np.newaxis]
+	output_util.plot_confusion_matrix(cm_normalized,all_labels,title='Normalized Confusion Matrix')
+
+""" Tests the entire cross-validation pipeline, including training, testing and visualization """
+def test_entire_pipeline():
 	kernel = Scikit_SVM.getLinearKernel()
 	clf = Scikit_SVM(kernel)
 	validator = StratifiedCrossValidator(10,clf)
-	print('average accuracy: {}'.format(validator.run()))
+	cm = validator.run()
+	norm_cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+	output_util.plot_confusion_matrix(norm_cm,all_labels,title='Normalized Confusion Matrix')
 
 if __name__ == '__main__':
-	test()
+	test_cm_plotting()
