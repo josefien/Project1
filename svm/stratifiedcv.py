@@ -80,8 +80,10 @@ class StratifiedCrossValidator(object):
 		print("scores:\n{}".format(scores))
 
 		final_cm = self._compileConfusionMatrices(confusion_matrices)
+		np.savetxt('confusion_matrix.txt',final_cm)
 		plt.figure()
 		output_util.plot_confusion_matrix(final_cm,all_labels)
+		plt.show()
 		return np.average(scores)
 
 	def _compileConfusionMatrices(self,matrices):
@@ -90,6 +92,18 @@ class StratifiedCrossValidator(object):
 			matrix_sum = np.add(matrix_sum,matrix)
 		return matrix_sum
 
+def cm_plot_test():
+	non_normalized_cm = np.loadtxt('confusion_matrix.txt',np.float32)
+	plt.figure()
+	output_util.plot_confusion_matrix(non_normalized_cm,all_labels)
+	plt.show()
+
+	cm_normalized = non_normalized_cm.astype('float') / non_normalized_cm.sum(axis=1)[:, np.newaxis]
+	plt.figure()
+	output_util.plot_confusion_matrix(cm_normalized,all_labels,title='Normalized Confusion Matrix')
+	plt.show()
+	pass
+
 def test():
 	kernel = Scikit_SVM.getLinearKernel()
 	clf = Scikit_SVM(kernel)
@@ -97,4 +111,4 @@ def test():
 	print('average accuracy: {}'.format(validator.run()))
 
 if __name__ == '__main__':
-	test()
+	cm_plot_test()
