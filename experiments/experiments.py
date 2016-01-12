@@ -15,5 +15,6 @@ class Experiments:
 	""" Produce output from experiments: write results to file,
 	produce plots, etc.
 	"""
+	@staticmethod
 	def output():
 		pass
