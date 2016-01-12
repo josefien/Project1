@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+""" Visualize the parameter confusion matrix using matplotlib """
 def plot_confusion_matrix(cm, labels, title='Confusion matrix', cmap=plt.cm.summer):
+    plt.figure()
     plt.imshow(cm, interpolation='nearest',cmap=cmap)
     plt.title(title)
     plt.colorbar()
@@ -11,3 +13,4 @@ def plot_confusion_matrix(cm, labels, title='Confusion matrix', cmap=plt.cm.summ
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
+    plt.show()

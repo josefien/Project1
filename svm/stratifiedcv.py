@@ -77,14 +77,10 @@ class StratifiedCrossValidator(object):
 			scores.append(self.clf.score(test_data,test_response))
 
 			i = i + 1
+		# Print the average accuracy (over all labels) for each fold
 		print("scores:\n{}".format(scores))
 
-		final_cm = self._compileConfusionMatrices(confusion_matrices)
-		np.savetxt('confusion_matrix.txt',final_cm)
-		plt.figure()
-		output_util.plot_confusion_matrix(final_cm,all_labels)
-		plt.show()
-		return np.average(scores)
+		return self._compileConfusionMatrices(confusion_matrices)
 
 	def _compileConfusionMatrices(self,matrices):
 		matrix_sum = matrices.pop()
@@ -92,23 +88,20 @@ class StratifiedCrossValidator(object):
 			matrix_sum = np.add(matrix_sum,matrix)
 		return matrix_sum
 
-def cm_plot_test():
+""" Function for testing the plotting of the normalized confusion matrix """
+def test_cm_plotting():
 	non_normalized_cm = np.loadtxt('confusion_matrix.txt',np.float32)
-	plt.figure()
-	output_util.plot_confusion_matrix(non_normalized_cm,all_labels)
-	plt.show()
-
 	cm_normalized = non_normalized_cm.astype('float') / non_normalized_cm.sum(axis=1)[:, np.newaxis]
-	plt.figure()
 	output_util.plot_confusion_matrix(cm_normalized,all_labels,title='Normalized Confusion Matrix')
-	plt.show()
-	pass
 
-def test():
+""" Tests the entire cross-validation pipeline, including training, testing and visualization """
+def test_entire_pipeline():
 	kernel = Scikit_SVM.getLinearKernel()
 	clf = Scikit_SVM(kernel)
 	validator = StratifiedCrossValidator(10,clf)
-	print('average accuracy: {}'.format(validator.run()))
+	cm = validator.run()
+	norm_cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+	output_util.plot_confusion_matrix(norm_cm,all_labels,title='Normalized Confusion Matrix')
 
 if __name__ == '__main__':
-	cm_plot_test()
+	test_cm_plotting()
