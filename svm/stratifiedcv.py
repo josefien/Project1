@@ -20,21 +20,13 @@ all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit
 """
 class StratifiedCrossValidator(object):
 	"""docstring for StratifiedCrossValidator"""
-	def __init__(self,n_folds,clf,dataset):
+	def __init__(self,n_folds,clf,X,y):
 		super(StratifiedCrossValidator, self).__init__()
 		self.clf = clf
 		self.n_folds = n_folds
-		self.dataset = dataset
+		self.X = X
+		self.y = y
 		print("Setting up validator...")
-
-	# Ask the classifier to provide the data and response values that will be used to train
-	# and validate the data. The classifier will have to take care of any data preprocessing
-	# steps by itself. I factored this out because SVM and CNN will have a different process
-	# of preprocessing data.
-	# dataset: string of which dataset will be used for the SVM (determines which feature and 
-	# label files will be loaded)
-	def _load_data(self,dataset):
-		self.X, self.y = self.clf.load_data(dataset)
 
 	# Divide labels/responses into n stratified folds.
 	# Stratification means that each folds has approximately the same distribution of labels/responses.
@@ -47,7 +39,6 @@ class StratifiedCrossValidator(object):
 	# trained and tested on each k-fold stratified data set.
 	# Finally, the average of the attained scores is returned.
 	def run(self):
-		self._load_data(self.dataset)
 
 		print('Normalizing data...')
 		# Scale/normalize data to [0,1] range.
