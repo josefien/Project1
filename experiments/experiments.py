@@ -4,30 +4,30 @@ from dataloader import DataLoader
 
 class Experiment:
 
-	def __init__(self, dataset_string, clf_names, clfs, n_folds):
-		self.filename=filename
-		self.X, self.y = DataLoader(dataset_string).load_data()
-
-	""" Load data, parameters for classifiers, etc.
+	""" Load data set, set up and run cross validators.
+		Parameter description:
+		dataset_string: the string indicating the file name of the feature/data set
+		clf_names: a list of strings indicating the name of the classifiers that are
+		being run. Can be used for naming files when outputting the confusion matrices. Need
+		to be in the same order as the list of classifiers clfs that is passed.
+		clfs: a list of SVM's for which kernels and penalty parameter C have already been set.
+		n_folds: the number of folds to use for cross validation.
 	"""
-	def setup(dataset_string,clfs,n_folds):
-		X,y = data_loader.load_data()
-		return [StratifiedCrossValidator(n_folds,clf,X,y) for clf in clfs]
-
-	""" Train and test classifiers using cross validation """
 	@staticmethod
-	def run(validators):
-		return [val.run() for val in validators]
+	def run(dataset_string, clf_names, clfs, n_folds):
+			X,y = DataLoader(dataset_string).load_data()
+			conf_matrices = [StratifiedCrossValidator(n_folds,clf,X,y).run() for clf in clfs]
+			output(conf_matrices)
 
 	""" Produce output from experiments: write results to file,
 	produce plots, etc.
 	"""
 	@staticmethod
 	def output(conf_mats):
-		for mat in conf_mats:
+		pass
 
 
 def main():
-	datasets = ['set1','set2','set3']
+	dataset = 'standard'
 	kernels = [kern1,kern2,kern3]
 	Experiments.run(Experiments.setup())
