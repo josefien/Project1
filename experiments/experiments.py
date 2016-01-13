@@ -29,7 +29,7 @@ class Experiment:
 	def output(conf_mats,dataset_string,clf_names):
 		i = 0
 		for mat in conf_mats:
-			filename = 'outputtest1_{}_{}.txt'.format(dataset_string,clf_names[i])
+			filename = '{}_{}.txt'.format(dataset_string,clf_names[i])
 			np.savetxt(filename,mat)
 			i = i + 1
 
@@ -62,6 +62,8 @@ def example():
 	clf_names = chi2_clf_names + linear_clf_names
 
 	n_folds = 10
+
+	print('clf_names:\n{}'.format(clf_names))
 
 	Experiment.output(Experiment.run(dataset_string,clfs,n_folds),dataset_string,clf_names)
 
