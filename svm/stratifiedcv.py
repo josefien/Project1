@@ -98,4 +98,3 @@ def test_entire_pipeline():
 	output_util.plot_confusion_matrix(norm_cm,all_labels,title='Normalized Confusion Matrix')
 
 if __name__ == '__main__':
-	test_entire_pipeline()
