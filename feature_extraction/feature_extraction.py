@@ -77,14 +77,14 @@ def apply_combined(to_extract,classpath,bof_model):
     if 'hist' in to_extract:
         hist_vector = histogram(classpath)
 
-    # Create image feature vector by appending all vectors
+    # Create image feature vector by concatenating all vectors
     feature_vector = np.concatenate((gb_vector, bf_vector,hist_vector))
     return feature_vector
 
 if __name__ == '__main__':
     # Which features to extract, all is 
     # ['hist','bof','gabor']
-    to_extract = ['hist']
+    to_extract = ['bof']
     f_prefix = "_".join(to_extract)
     # Sub directory in feature-directory to write feature-files to
     directory = 'feature_methods'
@@ -96,10 +96,11 @@ if __name__ == '__main__':
         # File of the paths of images used for training the BoF model
         tFile = open('bof_trainset.txt','r')
 
+    path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\'
     # File to which the feature vectors are written to
-    fFile = open('../features/' + directory + '/' + f_prefix + '_' + dataset + '_features.txt', 'w')
+    fFile = open(path + directory + '/' + f_prefix + '_' + dataset + '_features.txt', 'w')
     # File to which the classes are written to
-    cFile = open('../features/' + directory + '/' + f_prefix + '_' + dataset + '_classes.txt','w')
+    cFile = open(path + directory + '/' + f_prefix + '_' + dataset + '_classes.txt','w')
     
     all_features = []
     all_classes = []
