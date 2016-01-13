@@ -96,5 +96,3 @@ def test_entire_pipeline():
 	cm = validator.run()
 	norm_cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 	output_util.plot_confusion_matrix(norm_cm,all_labels,title='Normalized Confusion Matrix')
-
-if __name__ == '__main__':

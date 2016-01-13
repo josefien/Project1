@@ -55,7 +55,6 @@ class Scikit_SVM:
 	def getRBFKernel(gamma_val):
 		return functools.partial(rbf_kernel,gamma=gamma_val)
 
-
 def test():
 	# Set up kernels
 	gammas=[]
@@ -73,4 +72,4 @@ def test():
 		svm.train(X,y)
 
 if __name__ == '__main__':
-	test()
+	name_test()

@@ -1,6 +1,10 @@
 import sys
 sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/util')
+sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/svm')
 from dataloader import DataLoader
+from scikitsvm import Scikit_SVM
+from stratifiedcv import StratifiedCrossValidator
+import numpy as np
 
 class Experiment:
 
@@ -14,20 +18,39 @@ class Experiment:
 		n_folds: the number of folds to use for cross validation.
 	"""
 	@staticmethod
-	def run(dataset_string, clf_names, clfs, n_folds):
-			X,y = DataLoader(dataset_string).load_data()
+	def run(dataset_string, labels, clf_names, clfs, n_folds):
+			X,y = DataLoader(dataset_string,labels).load_data()
 			conf_matrices = [StratifiedCrossValidator(n_folds,clf,X,y).run() for clf in clfs]
-			output(conf_matrices)
+			np.save('test_conf_matrix',conf_matrices)
+			print('type(conf_matrices): {}'.format(str(type(conf_matrices))))
+			Experiment.output(conf_matrices,dataset_string,clf_names)
 
 	""" Produce output from experiments: write results to file,
 	produce plots, etc.
 	"""
 	@staticmethod
-	def output(conf_mats):
-		pass
-
+	def output(conf_mats,dataset_string,clf_names):
+		print('type(conf_mats): {}'.format(str(type(conf_mats))))
+		i = 0
+		for mat in conf_mats:
+			filename = 'expmt_{}_{}.txt'.format(dataset_string,clf_names[i])
+			np.savetxt(filename,mat)
+			i = i + 1
 
 def main():
-	dataset = 'standard'
-	kernels = [kern1,kern2,kern3]
-	Experiments.run(Experiments.setup())
+	labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
+	dataset_string = 'standard'
+	kernels = [Scikit_SVM.getLinearKernel()]
+	pen_params = [0.5]
+	clfs = []
+	clf_names = []
+	n_folds = 10
+	for ker in kernels:
+		for p in pen_params:
+			clfs.append(Scikit_SVM(ker,p))
+			clf_names.append('linear_{}'.format(str(p)))
+	print('len(clfs): {}'.format(len(clfs)))
+	Experiment.output(Experiment.run(dataset_string,labels,clf_names,clfs,n_folds),dataset_string,clf_names)
+
+if __name__ == '__main__':
+	main()

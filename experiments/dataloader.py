@@ -1,8 +1,12 @@
+from itertools import izip
+import re
+import numpy as np
+
 class DataLoader:
 
 	def __init__(self,dataset_string,labels):
 		self.dataset_string = dataset_string
-		self.labels
+		self.labels = labels
 
 	""" Reads files outputted by feature_extraction.py
 	features.txt contains per line the feature array of the image
@@ -13,8 +17,9 @@ class DataLoader:
 	"""
 	def load_data(self):
 		print("loading data...")
-		inputFeatures = '../feature_extraction/' + dataset_string + '_features.txt'
-		inputLabels = '../feature_extraction/' + dataset_string + '_classes.txt'
+		inputFeatures = '../feature_extraction/' + self.dataset_string + '_features.txt'
+		inputLabels = '../feature_extraction/' + self.dataset_string + '_classes.txt'
+		print('type(inputFeatures): {}'.format(type(inputFeatures)))
 		X,y = self._adjustFeatures(inputFeatures,inputLabels)
 		return (X,y)
 
@@ -27,8 +32,8 @@ class DataLoader:
 	[f e a t u r e] - label3
 	Returns both extended feature matrix and label vector
 	"""
-	def _adjustFeatures(feature_file,label_file,param_labels):
-		#all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
+	def _adjustFeatures(self,feature_file,label_file):
+		all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
 		ff = open(feature_file,'r')
 		lf = open(label_file,'r')
 		newFF = open('features_extended.txt','w')
@@ -39,9 +44,9 @@ class DataLoader:
 			path = info[0]
 			label_string = info[1]
 			labels = re.sub("\n","",label_string).split(',')
-			for i in range(len(param_labels)):
+			for i in range(len(all_labels)):
 				# Turns labels into numerical values 
-				if param_labels[i] in labels:
+				if all_labels[i] in labels:
 					newFF.write(featL)
 					newLF.write("%d\t%s\n" %(i,path))
 		newFF.close()
@@ -50,7 +55,7 @@ class DataLoader:
 		labels = self._fetchLabels('labels_extended.txt')
 		return (features,labels)
     
-	def _fetchLabels(class_path_file):
+	def _fetchLabels(self,class_path_file):
 		f = open(class_path_file,'r')
 		labels = []
 		for line in f:
