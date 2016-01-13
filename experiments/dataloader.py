@@ -4,9 +4,8 @@ import numpy as np
 
 class DataLoader:
 
-	def __init__(self,dataset_string,labels):
+	def __init__(self,dataset_string):
 		self.dataset_string = dataset_string
-		self.labels = labels
 
 	""" Reads files outputted by feature_extraction.py
 	features.txt contains per line the feature array of the image
