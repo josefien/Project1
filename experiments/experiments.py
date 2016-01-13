@@ -18,22 +18,18 @@ class Experiment:
 		n_folds: the number of folds to use for cross validation.
 	"""
 	@staticmethod
-	def run(dataset_string, labels, clf_names, clfs, n_folds):
-			X,y = DataLoader(dataset_string,labels).load_data()
-			conf_matrices = [StratifiedCrossValidator(n_folds,clf,X,y).run() for clf in clfs]
-			np.save('test_conf_matrix',conf_matrices)
-			print('type(conf_matrices): {}'.format(str(type(conf_matrices))))
-			Experiment.output(conf_matrices,dataset_string,clf_names)
+	def run(dataset_string, labels, clfs, n_folds):
+		X,y = DataLoader(dataset_string,labels).load_data()
+		return [StratifiedCrossValidator(n_folds,clf,X,y).run() for clf in clfs]
 
 	""" Produce output from experiments: write results to file,
 	produce plots, etc.
 	"""
 	@staticmethod
 	def output(conf_mats,dataset_string,clf_names):
-		print('type(conf_mats): {}'.format(str(type(conf_mats))))
 		i = 0
 		for mat in conf_mats:
-			filename = 'expmt_{}_{}.txt'.format(dataset_string,clf_names[i])
+			filename = 'outputtest1_{}_{}.txt'.format(dataset_string,clf_names[i])
 			np.savetxt(filename,mat)
 			i = i + 1
 
@@ -50,7 +46,7 @@ def main():
 			clfs.append(Scikit_SVM(ker,p))
 			clf_names.append('linear_{}'.format(str(p)))
 	print('len(clfs): {}'.format(len(clfs)))
-	Experiment.output(Experiment.run(dataset_string,labels,clf_names,clfs,n_folds),dataset_string,clf_names)
+	Experiment.output(Experiment.run(dataset_string,labels,clfs,n_folds),dataset_string,clf_names)
 
 if __name__ == '__main__':
 	main()
