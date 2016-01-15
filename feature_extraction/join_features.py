@@ -9,8 +9,8 @@ import gabor_filter as gf
 import decimal
 
 path= 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\feature_methods\\'
-features_to_join = [path+'bof_standard_features.txt',path+'gabor_standard_features.txt']
-or_file = path + 'test_features.txt'
+features_to_join = [path+'gabor/standard_features.txt',path+'hist/standard_features.txt']
+or_file = path + 'hist_gabor/standard_features.txt'
 
 X = np.loadtxt(features_to_join[0],np.float32)
 	

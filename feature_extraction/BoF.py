@@ -1,5 +1,5 @@
 import sys
-sys.path.append('C:\Users\Wim\Documents\AIDKE\Project 1\Code\\food\util')
+sys.path.append('C:/Users/Nadine/git/Project1/util')
 import cv2
 import numpy as np
 import os
