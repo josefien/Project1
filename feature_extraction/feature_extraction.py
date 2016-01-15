@@ -31,10 +31,11 @@ def gabor(classpath):
 def bof_init():
     # Size of vocabulary of visual features/words
     # Try 500 to start with
-    vocab_size = 500
+    vocab_size = 250
+    surf_threshold = 4500
     
     # Create BoF instance
-    bof = bf.BoF(loader,vocab_size)
+    bof = bf.BoF(loader,vocab_size,surf_threshold)
     # Create bag-of-features
     bof.createBagOfWords()
     loader.closeIteration()
