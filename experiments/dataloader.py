@@ -2,6 +2,9 @@ from itertools import izip
 import re
 import numpy as np
 
+# Path to feature-file-s
+path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\datasets\\balanced_18_80\\'
+
 class DataLoader:
 
 	def __init__(self,dataset_string):
@@ -16,8 +19,8 @@ class DataLoader:
 	"""
 	def load_data(self):
 		print("loading data...")
-		inputFeatures = '../feature_extraction/' + self.dataset_string + '_features.txt'
-		inputLabels = '../feature_extraction/' + self.dataset_string + '_classes.txt'
+		inputFeatures = path + self.dataset_string + '_features.txt'
+		inputLabels = path + self.dataset_string + '_classes.txt'
 		print('type(inputFeatures): {}'.format(type(inputFeatures)))
 		X,y = self._adjustFeatures(inputFeatures,inputLabels)
 		return (X,y)

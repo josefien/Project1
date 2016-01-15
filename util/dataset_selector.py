@@ -76,19 +76,25 @@ def define_training_data(src_features, src_classes, dest_features, dest_classes,
 #creates training set with 5 labels (with highest occurence) and 400 images per label (duplicates if not enough)
 #filters only single labeled images
 #total number of labels: 19
-path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\datasets\\'
+path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\feature_methods\\hist_gabor\\'
 if __name__ == '__main__':
-    datasets = ['standard','grabcut','hsl_grabcut','hsv_grabcut','rgb_grabcut']
-    prefix = datasets[1]
-    feature_file = prefix+'_features.txt'
-    label_file = prefix+'_classes.txt'
+    #datasets = ['standard','grabcut','hsl_grabcut','hsv_grabcut','rgb_grabcut']
+    #prefix = datasets[4]
+    datasets = ['standard']
+    for prefix in datasets:
+        feature_file = prefix+'_features.txt'
+        label_file = prefix+'_classes.txt'
 
-    from_dir = 'original'
-    to_dir = 'balanced_5_500'
+        from_dir = ''
 
-    f1 = path + from_dir + '/' + feature_file
-    f2 = path + from_dir + '/' + label_file
-    f3 = path + to_dir + '/' + feature_file
-    f4 = path + to_dir + '/' + label_file
+        number_of_classes = 3
+        occurences = 434
+
+        to_dir = "%s_%d_%d" %('balanced',number_of_classes,occurences)
+
+        f1 = path + from_dir + '/' + feature_file
+        f2 = path + from_dir + '/' + label_file
+        f3 = path + to_dir + '/' + feature_file
+        f4 = path + to_dir + '/' + label_file
   
-    define_training_data(f1,f2,f3,f4,5,500)
+        define_training_data(f1,f2,f3,f4,number_of_classes,occurences)

@@ -1,6 +1,6 @@
 import sys
-sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/feature_extraction')
-sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/util')
+sys.path.append('C:/Users/Nadine/git/Project1/feature_extraction')
+sys.path.append('C:/Users/Nadine/git/Project1/util')
 import feature_extraction as feat_ext
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.pipeline import Pipeline
@@ -11,7 +11,7 @@ import data_preprocessing
 import output_util
 import matplotlib.pyplot as plt
 
-dataset_path = 'C:\\Users\\Wim\\Documents\\AIDKE\\Project 1\\Data set\\foodimages\\foodimages'
+dataset_path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages'
 
 all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
 
@@ -73,6 +73,9 @@ class StratifiedCrossValidator(object):
 			i = i + 1
 		# Print the average accuracy (over all labels) for each fold
 		print("scores:\n{}".format(scores))
+		average = sum(scores)/len(scores)
+		print("average score: %f" %(average))
+
 
 		return self._compileConfusionMatrices(confusion_matrices)
 
@@ -84,7 +87,7 @@ class StratifiedCrossValidator(object):
 
 """ Function for testing the plotting of the normalized confusion matrix """
 def test_cm_plotting():
-	non_normalized_cm = np.loadtxt('confusion_matrix.txt',np.float32)
+	non_normalized_cm = np.loadtxt('../experiments/standard_standard_C_1_linear.txt',np.float32)
 	cm_normalized = non_normalized_cm.astype('float') / non_normalized_cm.sum(axis=1)[:, np.newaxis]
 	output_util.plot_confusion_matrix(cm_normalized,all_labels,title='Normalized Confusion Matrix')
 
@@ -96,3 +99,6 @@ def test_entire_pipeline():
 	cm = validator.run()
 	norm_cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 	output_util.plot_confusion_matrix(norm_cm,all_labels,title='Normalized Confusion Matrix')
+
+if __name__ == '__main__':
+	test_cm_plotting()
