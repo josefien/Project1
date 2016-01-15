@@ -10,7 +10,7 @@ from image_loader import *
 instances = 100
 
 class BoF:
-    def __init__(self, loader, vocab_size):
+    def __init__(self, loader, vocab_size, surf_threshold):
         self.loader = loader
         self.vocab_size = vocab_size
 
@@ -18,7 +18,7 @@ class BoF:
         self.fea_det = cv2.FeatureDetector_create("SURF")
         self.des_ext = cv2.DescriptorExtractor_create("SURF")
 
-        self.surf = cv2.SURF(4500)
+        self.surf = cv2.SURF(surf_threshold)
 
         # Feature dictionary that will allow the lookup of the computed
         # feature histogram for a given feature
