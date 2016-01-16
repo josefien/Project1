@@ -76,7 +76,7 @@ def define_training_data(src_features, src_classes, dest_features, dest_classes,
 #creates training set with 5 labels (with highest occurence) and 400 images per label (duplicates if not enough)
 #filters only single labeled images
 #total number of labels: 19
-path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\feature_methods\\hist_gabor\\'
+path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\bof\\balanced_100\\'
 if __name__ == '__main__':
     #datasets = ['standard','grabcut','hsl_grabcut','hsv_grabcut','rgb_grabcut']
     #prefix = datasets[4]

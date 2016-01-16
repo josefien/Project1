@@ -69,7 +69,7 @@ def example():
 
 def features():
 	dataset_string = 'standard'
-	C_params = [1]
+	C_params = [0.2,0.5,1]
 	# Linear kernel has no parameters apart from the SVM's own C parameter
 	linear_kernel = Scikit_SVM.getLinearKernel()
 	# Create strings representing these kernel/parameter combinations

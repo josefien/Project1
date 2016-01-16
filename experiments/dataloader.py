@@ -3,7 +3,7 @@ import re
 import numpy as np
 
 # Path to feature-file-s
-path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\datasets\\balanced_18_80\\'
+path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\datasets\\'
 
 class DataLoader:
 

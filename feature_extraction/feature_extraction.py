@@ -11,6 +11,7 @@ import decimal
 dataset = 'standard'
 path_to_images = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\' + dataset
 loader = ImageLoader('../image_classification.csv',path_to_images)
+loader_bof = ImageLoader('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\balanced_100.csv',path_to_images)
 
 # Gabor filter taken from Wim's implementation
 def gabor(classpath):
@@ -85,10 +86,10 @@ def apply_combined(to_extract,classpath,bof_model):
 if __name__ == '__main__':
     # Which features to extract, all is 
     # ['hist','bof','gabor']
-    to_extract = ['bof']
+    to_extract = ['hist','gabor']
     f_prefix = "_".join(to_extract)
     # Sub directory in feature-directory to write feature-files to
-    directory = 'feature_methods'
+    directory = 'datasets'
 
     # Initialize the BoF model
     bof_model = 0
@@ -99,13 +100,13 @@ if __name__ == '__main__':
 
     path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\'
     # File to which the feature vectors are written to
-    fFile = open(path + directory + '/' + f_prefix + '_' + dataset + '_features.txt', 'w')
+    fFile = open(path + directory + '/' + dataset + '_features.txt', 'w')
     # File to which the classes are written to
-    cFile = open(path + directory + '/' + f_prefix + '_' + dataset + '_classes.txt','w')
+    cFile = open(path + directory + '/' + dataset + '_classes.txt','w')
     
     all_features = []
     all_classes = []
-
+    """
     if 'bof' in to_extract:
         for line in tFile:
             info = line.split('\t')
@@ -116,18 +117,18 @@ if __name__ == '__main__':
             all_classes.append(classes_string)
             feature_vector = apply_combined(to_extract,classpath,bof_model)
             all_features.append(feature_vector)
-
-    if not 'bof' in to_extract:
-        loader.startIteration()
-        while loader.hasNext():     
-            [img, classes, classpath] = loader.getNextImage() 
-            classes_string = ','.join(classes)
-            classpath_s = classpath.replace('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\','',1) 
-            classes_string = classpath_s + '\t' + classes_string + '\n'
-            all_classes.append(classes_string)
-            feature_vector = apply_combined(to_extract,classpath,bof_model)
-            all_features.append(feature_vector)
-        loader.closeIteration()
+    """ 
+    #if not 'bof' in to_extract:
+    loader.startIteration()
+    while loader.hasNext():     
+        [img, classes, classpath] = loader.getNextImage() 
+        classes_string = ','.join(classes)
+        classpath_s = classpath.replace('C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\','',1) 
+        classes_string = classpath_s + '\t' + classes_string + '\n'
+        all_classes.append(classes_string)
+        feature_vector = apply_combined(to_extract,classpath,bof_model)
+        all_features.append(feature_vector)
+    loader.closeIteration()
     
     feature_matrix = np.matrix(np.array(all_features))
     np.savetxt(fFile,feature_matrix)
