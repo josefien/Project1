@@ -80,9 +80,9 @@ def apply_combined(to_extract,classpath,bof_model):
 
 if __name__ == '__main__':
 
-    datasets = ['dataset4']
-    csv_names = ['all','balanced_100','balanced_200']
-    feature_methods = ['hist','gabor']
+    datasets = ['foodimages']
+    csv_names = ['all']
+    feature_methods = ['gabor']
     for dataset in datasets:
         for csv_name in csv_names:
             for to_extract in feature_methods:
