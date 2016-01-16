@@ -1,9 +1,11 @@
 import sys
-sys.path.append('C:/Users/Nadine/git/Project1/util')
-sys.path.append('C:/Users/Nadine/git/Project1/svm')
+sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/svm')
+sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/util')
+sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/feature_extraction')
 from dataloader import DataLoader
 from scikitsvm import Scikit_SVM
 from stratifiedcv import StratifiedCrossValidator
+from sklearn.metrics import classification_report
 import numpy as np
 
 class Experiment:
@@ -26,12 +28,45 @@ class Experiment:
 	produce plots, etc.
 	"""
 	@staticmethod
-	def output(conf_mats,dataset_string,clf_names):
+	def output(labels,dataset_string,clf_names):
 		i = 0
-		for mat in conf_mats:
-			filename = '{}_{}.txt'.format(dataset_string,clf_names[i])
-			np.savetxt(filename,mat)
+		for lab in labels:
+			print('lab[:,0].shape: {}'.format(lab[:,0].shape))
+			# Compute, print and save classification report
+			f = open('{}_clfn_report.txt'.format(clf_names[i]),'w')
+			report = classification_report(lab[:,0],lab[:,1])
+			print('classification_report:\n{}'.format(report))
+			f.write(report)
+
+			# Compute, print and save confusion matrix
+			matrix = confusion_matrix(lab[:,0],lab[:,1])
+			np.savetxt('{}_cfsn_matrix.txt'.format(clf_names[i]),matrix)
 			i = i + 1
+
+def report():
+	# The string indicating the data set that is going to be used for this experiment
+	dataset_string = 'dataset1'
+
+	# The values for the SVM's penalty parameter C (these are just dummy values)
+	C_params = [0.3]
+
+	# Linear kernel has no parameters apart from the SVM's own C parameter
+	linear_kernel = Scikit_SVM.getLinearKernel()
+	# Create strings representing these kernel/parameter combinations
+	linear_clf_names = ['{}_C_{}_linear'.format(dataset_string,C) for C in C_params]
+	# Create linear classifiers
+	lin_clfs = [Scikit_SVM(linear_kernel,C) for C in C_params]
+
+	# Concatenate classifiers into one list
+	clfs = lin_clfs
+	# Concatenate classifier names into one list
+	clf_names = linear_clf_names
+
+	n_folds = 10
+
+	print('clf_names:\n{}'.format(clf_names))
+
+	Experiment.output(Experiment.run(dataset_string,clfs,n_folds),dataset_string,clf_names)
 
 def example():
 	# The string indicating the data set that is going to be used for this experiment
@@ -120,4 +155,4 @@ def kernels():
 
 
 if __name__ == '__main__':
-	features()
+	report()
