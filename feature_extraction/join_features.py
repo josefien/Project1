@@ -1,22 +1,37 @@
 import sys
-sys.path.append('C:/Users/Nadine/git/Project1/util')
-from image_loader import *
 import cv2
 import numpy as np
-import random
-import BoF as bf
-import gabor_filter as gf
-import decimal
 
-path= 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\feature_methods\\'
-features_to_join = [path+'gabor/standard_features.txt',path+'hist/standard_features.txt']
-or_file = path + 'hist_gabor/standard_features.txt'
+# Path to directory containing the dataset-directories with feature-files
+path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\features\\'
+# Dataset to be used
+dataset = 'dataset1'
+# Which size is used, can be ['all','balanced_100','balanced_200']
+size = 'balanced_100'
+# Which features will be joined, can be ['bof','gabor','hist']
+features_to_join = ['bof','gabor']
 
-X = np.loadtxt(features_to_join[0],np.float32)
-	
+s1 = ("_").join(list(features_to_join[0]))
+f1 = path + dataset + '/' + s1 + '_' + dataset + '_' + size + '_features.txt'
+X = np.loadtxt(f1,np.float32)
+
+or_string = s1	
 for i in range(1,len(features_to_join)):
-	print i
-	feature_matrix = np.loadtxt(features_to_join[i],np.float32)
+	s2 = ("_").join(list(features_to_join[i]))
+	or_string = or_string + '_' + s2
+	f2 = path + dataset + '/' + s2 + '_' + dataset + '_' + size + '_features.txt'
+	feature_matrix = np.loadtxt(f2,np.float32)
 	X = np.concatenate((X,feature_matrix),axis=1)
 
+# Result is written to new file with combined prefixes
+or_file = path + dataset + '/' + or_string + '_' + dataset + '_' + size + '_features.txt'
 np.savetxt(or_file,X)
+
+cf = path + dataset + '/' + s1 + '_' + dataset + '_' + size + '_classes.txt'
+ocf = path + dataset + '/' + or_string + '_' + dataset + '_' + size + '_classes.txt'
+
+cf1 = open(cf,'r')
+cf2 = open(ocf,'w')
+
+for line in cf1:
+	cf2.write(line)
