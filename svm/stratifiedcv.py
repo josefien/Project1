@@ -17,6 +17,8 @@ all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit
 save_matrix_flag = True
 save_report_flag = True
 
+cntr = 1
+
 """ Class that runs stratified k-fold cross validation on a data set
 	whose name is given by parameter string 'dataset'.
 """
@@ -28,21 +30,21 @@ class StratifiedCrossValidator(object):
 		self.n_folds = n_folds
 		self.X = X
 		self.y = y
-		print("Setting up validator...")
 
 	# Divide labels/responses into n stratified folds.
 	# Stratification means that each folds has approximately the same distribution of labels/responses.
 	# StratifiedKFold is a built-in class in Scikit-learn.
 	def _stratify(self):
-		print("Stratifying samples...")
 		self.fold_indices = StratifiedKFold(self.y, self.n_folds)
 
 	# Main loop of the cross-validation algorithm. Data is loaded and stratified; classifier is
 	# trained and tested on each k-fold stratified data set.
 	# Finally, the average of the attained scores is returned.
 	def run(self):
+		global cntr
+		print('Validating classifier no. {}'.format(cntr))
+		cntr = cntr + 1
 
-		print('Normalizing data...')
 		# Scale/normalize data to [0,1] range.
 		# The scaler that is "fit" to the training data could be used to scale
 		# the test data along the same scale as the training data. It is not being used
@@ -59,25 +61,18 @@ class StratifiedCrossValidator(object):
 		predictions = np.empty((0,1))
 
 		for train, test in self.fold_indices:
-			print('Start classifier no. {}...'.format(i))
 			# Assign training and test data sets based on fold indices
 			training_data, training_response, test_data, test_response = self.scaled_data[train], self.y[train], self.scaled_data[test], self.y[test]
 
-			print('Training classifier number {}'.format(i))
 			# Train classifier
 			self.clf.train(training_data,training_response)
 
 			# Predict labels for computing confusion matrix
 			test_prediction = self.clf.predict(test_data)
 
-			print('test_prediction.shape: {}'.format(test_prediction.shape))
-
-			print('test_response.shape: {}'.format(test_response.shape))
-
 			responses = np.vstack((responses,np.reshape(test_response,(-1,1))))
 			predictions = np.vstack((predictions,np.reshape(test_prediction,(-1,1))))
 
-			print('Testing classifier number {}'.format(i))
 			# Test classifier and store its performance score on the test data set
 			scores.append(self.clf.score(test_data,test_response))
 
@@ -91,15 +86,12 @@ class StratifiedCrossValidator(object):
 		responses = np.asarray(responses)
 		predictions = np.asarray(predictions)
 
-		print('responses.shape: {}'.format(responses.shape))
-		print('predictions.shape: {}'.format(predictions.shape))
-
 		ret = np.hstack((responses,predictions))
 
 		print('ret.shape: {}'.format(ret.shape))
 
 		# Return a 2-d array of shape [test_responses,test_predictions]
-		return np.hstack((responses,predictions))
+		return ret
 
 
 """ Function for testing the plotting of the normalized confusion matrix """
