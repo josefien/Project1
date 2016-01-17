@@ -3,7 +3,7 @@ import re
 import numpy as np
 
 # Path to feature-file-s
-path = 'C:/Users/Wim/Documents/AIDKE/Project 1/New Code/feature_extraction/'
+path = 'C:/Users/Wim/Documents/AIDKE/Project 1/New Code/feature_extraction/standard/'
 
 class DataLoader:
 
@@ -18,10 +18,8 @@ class DataLoader:
 	which feature and label files will be loaded)
 	"""
 	def load_data(self):
-		print("loading data...")
-		inputFeatures = path + self.dataset_string + '/h_i_s_t_dataset1_all_features.txt'
-		inputLabels = path + self.dataset_string + '/h_i_s_t_dataset1_all_classes.txt'
-		print('type(inputFeatures): {}'.format(type(inputFeatures)))
+		inputFeatures = path + self.dataset_string + '_features.txt'
+		inputLabels = path + self.dataset_string + '_classes.txt'
 		X,y = self._adjustFeatures(inputFeatures,inputLabels)
 		return (X,y)
 

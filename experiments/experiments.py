@@ -24,42 +24,35 @@ class Experiment:
 		n_folds: the number of folds to use for cross validation.
 	"""
 	@staticmethod
-	def run(dataset_string, clfs, n_folds):
+	def run(dataset_string, clf, n_folds):
 		X,y = DataLoader(dataset_string).load_data()
-		return [StratifiedCrossValidator(n_folds,clf,X,y).run() for clf in clfs]
+		return StratifiedCrossValidator(n_folds,clf,X,y).run()
 
 	""" Produce output from experiments: write results to file,
 	produce plots, etc.
 	"""
 	@staticmethod
-	def output(labels,dataset_string,clf_names):
-		i = 0
-		for lab in labels:
-			# Compute, print and save classification report
-			f = open('{}_clfn_report.txt'.format(clf_names[i]),'w')
-			report = classification_report(lab[:,0],lab[:,1])
-			print('classification_report:\n{}'.format(report))
-			f.write(report)
+	def output(lab,dataset_string,clf_name):
+		# Compute, print and save classification report
+		f = open('{}_clfn_report.txt'.format(clf_name),'w')
+		report = classification_report(lab[:,0],lab[:,1])
+		print('classification_report:\n{}'.format(report))
+		f.write(report)
 
-			# Compute confusion matrix
-			matrix = confusion_matrix(lab[:,0],lab[:,1])
-			# Normalize it
-			cm_normalized = matrix.astype('float') / matrix.sum(axis=1)[:, np.newaxis]
-			# Save it to file
-			np.savetxt('{}_cfsn_matrix.txt'.format(clf_names[i]),matrix)
-			# Create confusion matrix plot
-			output_util.plot_confusion_matrix(cm_normalized,all_labels,'{}_cfsn_matrix_plot'.format(clf_names[i]))
-			
-			# Increment index for output names
-			i = i + 1
+		# Compute confusion matrix
+		matrix = confusion_matrix(lab[:,0],lab[:,1])
+		# Normalize it
+		cm_normalized = matrix.astype('float') / matrix.sum(axis=1)[:, np.newaxis]
+		# Save it to file
+		np.savetxt('{}_cfsn_matrix.txt'.format(clf_name),matrix)
+		# Create confusion matrix plot
+		#output_util.plot_confusion_matrix(cm_normalized,all_labels,'{}_cfsn_matrix_plot'.format(clf_name))
 
 def report():
 	# The string indicating the data set that is going to be used for this experiment
-	dataset_string = 'dataset1'
+	dataset_string = 'standard_balanced_200'
 
-	# The values for the SVM's penalty parameter C (these are just dummy values)
-	C_params = [1.0]
-
+	C_params = [0.2, 0.4, 0.6, 0.8, 1.0]
 	# Linear kernel has no parameters apart from the SVM's own C parameter
 	linear_kernel = Scikit_SVM.getLinearKernel()
 	# Create strings representing these kernel/parameter combinations
@@ -72,11 +65,14 @@ def report():
 	# Concatenate classifier names into one list
 	clf_names = linear_clf_names
 
-	n_folds = 2
+	n_folds = 10
 
 	print('clf_names:\n{}'.format(clf_names))
 
-	Experiment.output(Experiment.run(dataset_string,clfs,n_folds),dataset_string,clf_names)
+	i = 0
+	for clf in clfs:
+		Experiment.output(Experiment.run(dataset_string,clf,n_folds),dataset_string,clf_names[i])
+		i = i + 1
 
 def example():
 	# The string indicating the data set that is going to be used for this experiment
