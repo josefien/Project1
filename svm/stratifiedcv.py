@@ -10,10 +10,12 @@ import numpy as np
 import data_preprocessing
 import output_util
 import matplotlib.pyplot as plt
+import numpy as np
 
 dataset_path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages'
-
 all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
+save_matrix_flag = True
+save_report_flag = True
 
 """ Class that runs stratified k-fold cross validation on a data set
 	whose name is given by parameter string 'dataset'.
@@ -49,8 +51,13 @@ class StratifiedCrossValidator(object):
 		scaler, self.scaled_data = data_preprocessing.getScaler(self.X)
 		self._stratify()
 		scores = []
-		confusion_matrices = []
 		i = 1
+
+		# Stores all actual test labels over all validation folds
+		responses = np.empty((0,1))
+		# Stores all predicted labels over all validation folds
+		predictions = np.empty((0,1))
+
 		for train, test in self.fold_indices:
 			print('Start classifier no. {}...'.format(i))
 			# Assign training and test data sets based on fold indices
@@ -63,27 +70,37 @@ class StratifiedCrossValidator(object):
 			# Predict labels for computing confusion matrix
 			test_prediction = self.clf.predict(test_data)
 
-			# Compute confusion matrix for this fold
-			confusion_matrices.append(confusion_matrix(test_response,test_prediction))
+			print('test_prediction.shape: {}'.format(test_prediction.shape))
+
+			print('test_response.shape: {}'.format(test_response.shape))
+
+			responses = np.vstack((responses,np.reshape(test_response,(-1,1))))
+			predictions = np.vstack((predictions,np.reshape(test_prediction,(-1,1))))
 
 			print('Testing classifier number {}'.format(i))
 			# Test classifier and store its performance score on the test data set
 			scores.append(self.clf.score(test_data,test_response))
 
 			i = i + 1
+
 		# Print the average accuracy (over all labels) for each fold
 		print("scores:\n{}".format(scores))
 		average = sum(scores)/len(scores)
 		print("average score: %f" %(average))
 
+		responses = np.asarray(responses)
+		predictions = np.asarray(predictions)
 
-		return self._compileConfusionMatrices(confusion_matrices)
+		print('responses.shape: {}'.format(responses.shape))
+		print('predictions.shape: {}'.format(predictions.shape))
 
-	def _compileConfusionMatrices(self,matrices):
-		matrix_sum = matrices.pop()
-		for matrix in matrices:
-			matrix_sum = np.add(matrix_sum,matrix)
-		return matrix_sum
+		ret = np.hstack((responses,predictions))
+
+		print('ret.shape: {}'.format(ret.shape))
+
+		# Return a 2-d array of shape [test_responses,test_predictions]
+		return np.hstack((responses,predictions))
+
 
 """ Function for testing the plotting of the normalized confusion matrix """
 def test_cm_plotting():
