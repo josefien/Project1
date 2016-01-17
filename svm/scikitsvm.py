@@ -22,7 +22,7 @@ class Scikit_SVM:
 
 	""" Use the classifier to classify given feature vectors """
 	def predict(self,samples):
-		return np.float32( [self.svm.predict(s) for s in samples])
+		return np.float32( [self.svm.predict(np.reshape(s,(1,-1))) for s in samples])
 
 	"""Return the mean accuracy of the trained classifier over all labels in the test set.
 		This is the only metric we have now, because it's built in, but we might have to look
@@ -55,7 +55,6 @@ class Scikit_SVM:
 	def getRBFKernel(gamma_val):
 		return functools.partial(rbf_kernel,gamma=gamma_val)
 
-
 def test():
 	# Set up kernels
 	gammas=[]
@@ -73,4 +72,4 @@ def test():
 		svm.train(X,y)
 
 if __name__ == '__main__':
-	test()
+	name_test()
