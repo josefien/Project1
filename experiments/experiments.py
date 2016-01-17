@@ -4,9 +4,13 @@ sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/util')
 sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/feature_extraction')
 from dataloader import DataLoader
 from scikitsvm import Scikit_SVM
+from sklearn.metrics import confusion_matrix
 from stratifiedcv import StratifiedCrossValidator
 from sklearn.metrics import classification_report
 import numpy as np
+import output_util
+
+all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
 
 class Experiment:
 
@@ -31,16 +35,22 @@ class Experiment:
 	def output(labels,dataset_string,clf_names):
 		i = 0
 		for lab in labels:
-			print('lab[:,0].shape: {}'.format(lab[:,0].shape))
 			# Compute, print and save classification report
 			f = open('{}_clfn_report.txt'.format(clf_names[i]),'w')
 			report = classification_report(lab[:,0],lab[:,1])
 			print('classification_report:\n{}'.format(report))
 			f.write(report)
 
-			# Compute, print and save confusion matrix
+			# Compute confusion matrix
 			matrix = confusion_matrix(lab[:,0],lab[:,1])
+			# Normalize it
+			cm_normalized = matrix.astype('float') / matrix.sum(axis=1)[:, np.newaxis]
+			# Save it to file
 			np.savetxt('{}_cfsn_matrix.txt'.format(clf_names[i]),matrix)
+			# Create confusion matrix plot
+			output_util.plot_confusion_matrix(cm_normalized,all_labels,'{}_cfsn_matrix_plot'.format(clf_names[i]))
+			
+			# Increment index for output names
 			i = i + 1
 
 def report():
@@ -48,7 +58,7 @@ def report():
 	dataset_string = 'dataset1'
 
 	# The values for the SVM's penalty parameter C (these are just dummy values)
-	C_params = [0.3]
+	C_params = [1.0]
 
 	# Linear kernel has no parameters apart from the SVM's own C parameter
 	linear_kernel = Scikit_SVM.getLinearKernel()
@@ -62,7 +72,7 @@ def report():
 	# Concatenate classifier names into one list
 	clf_names = linear_clf_names
 
-	n_folds = 10
+	n_folds = 2
 
 	print('clf_names:\n{}'.format(clf_names))
 

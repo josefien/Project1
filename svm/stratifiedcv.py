@@ -51,13 +51,12 @@ class StratifiedCrossValidator(object):
 		scaler, self.scaled_data = data_preprocessing.getScaler(self.X)
 		self._stratify()
 		scores = []
-		confusion_matrices = []
 		i = 1
 
 		# Stores all actual test labels over all validation folds
-		responses = np.array([]).reshape(0,1)
+		responses = np.empty((0,1))
 		# Stores all predicted labels over all validation folds
-		predictions = np.array([]).reshape(0,1)
+		predictions = np.empty((0,1))
 
 		for train, test in self.fold_indices:
 			print('Start classifier no. {}...'.format(i))
@@ -75,12 +74,8 @@ class StratifiedCrossValidator(object):
 
 			print('test_response.shape: {}'.format(test_response.shape))
 
-
-			np.vstack((responses,np.reshape(test_response,(-1,1))))
-			np.vstack((predictions,np.reshape(test_prediction,(-1,1))))
-
-			# Compute confusion matrix for this fold
-			confusion_matrices.append(confusion_matrix(test_response,test_prediction))
+			responses = np.vstack((responses,np.reshape(test_response,(-1,1))))
+			predictions = np.vstack((predictions,np.reshape(test_prediction,(-1,1))))
 
 			print('Testing classifier number {}'.format(i))
 			# Test classifier and store its performance score on the test data set
@@ -106,11 +101,6 @@ class StratifiedCrossValidator(object):
 		# Return a 2-d array of shape [test_responses,test_predictions]
 		return np.hstack((responses,predictions))
 
-	def _compileConfusionMatrices(self,matrices):
-		matrix_sum = matrices.pop()
-		for matrix in matrices:
-			matrix_sum = np.add(matrix_sum,matrix)
-		return matrix_sum
 
 """ Function for testing the plotting of the normalized confusion matrix """
 def test_cm_plotting():
