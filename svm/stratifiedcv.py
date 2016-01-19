@@ -14,6 +14,7 @@ import numpy as np
 
 dataset_path = 'C:\\Users\\Nadine\\Documents\\University\\Uni 2015\\RPMAI1\\foodimages\\foodimages'
 all_labels = ['Boterhammen','Aardappelen','Chips','Cornflakes','Frietjes','Fruit','Gebak','Hamburger','IJs','Koekjes','Muffin','Pasta','Pizza','Rijstgerecht','Salade','Snoep','Snoepreep','Soep','Yoghurt']
+labels_by_frequency = ['Sandwich','Fruit','Potatoes','Cookies','Yogurt','Pasta','Salad','Rice','Crisps','Candy Bar','Cornflakes','French Fries','Soup','Muffin','Pastry','Candy','Hamburger','Pizza','Ice Cream']
 save_matrix_flag = True
 save_report_flag = True
 
@@ -96,9 +97,11 @@ class StratifiedCrossValidator(object):
 
 """ Function for testing the plotting of the normalized confusion matrix """
 def test_cm_plotting():
-	non_normalized_cm = np.loadtxt('../experiments/standard_standard_C_1_linear.txt',np.float32)
+	non_normalized_cm = np.loadtxt('../experiments/dataset1_all_C_0.2_chi2_0.1_cfsn_matrix.txt',np.float32)
+	num_labels = non_normalized_cm.shape[0]
+	labels = labels_by_frequency[:num_labels]
 	cm_normalized = non_normalized_cm.astype('float') / non_normalized_cm.sum(axis=1)[:, np.newaxis]
-	output_util.plot_confusion_matrix(cm_normalized,all_labels,title='Normalized Confusion Matrix')
+	output_util.plot_confusion_matrix(cm_normalized,labels,title='Normalized Confusion Matrix')
 
 """ Tests the entire cross-validation pipeline, including training, testing and visualization """
 def test_entire_pipeline():
@@ -107,7 +110,7 @@ def test_entire_pipeline():
 	validator = StratifiedCrossValidator(10,clf)
 	cm = validator.run()
 	norm_cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-	output_util.plot_confusion_matrix(norm_cm,all_labels,title='Normalized Confusion Matrix')
+	output_util.plot_confusion_matrix(norm_cm,labels_by_frequency,title='Normalized Confusion Matrix')
 
 if __name__ == '__main__':
 	test_cm_plotting()
