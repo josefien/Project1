@@ -27,7 +27,7 @@ def gabor(classpath):
 def bof_init(loader):
     # Size of vocabulary of visual features/words
     # Try 500 to start with
-    vocab_size = 250
+    vocab_size = 100
     surf_threshold = 4500
     
     # Create BoF instance
@@ -80,9 +80,9 @@ def apply_combined(to_extract,classpath,bof_model):
 
 if __name__ == '__main__':
 
-    datasets = ['foodimages']
-    csv_names = ['all']
-    feature_methods = ['gabor']
+    datasets = ['dataset0','dataset2']
+    csv_names = ['balanced_200.csv']
+    feature_methods = ['bof']
     for dataset in datasets:
         for csv_name in csv_names:
             for to_extract in feature_methods:
