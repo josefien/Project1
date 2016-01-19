@@ -97,13 +97,8 @@ class StratifiedCrossValidator(object):
 
 """ Function for testing the plotting of the normalized confusion matrix """
 def test_cm_plotting():
-	balanced = True
-
 	non_normalized_cm = np.loadtxt('../experiments/dataset1_all_C_0.2_chi2_0.1_cfsn_matrix.txt',np.float32)
 	num_labels = non_normalized_cm.shape[0]
-	labels = all_labels
-	if balanced:
-		labels = labels_by_frequency[:num_labels]
 	labels = labels_by_frequency[:num_labels]
 	cm_normalized = non_normalized_cm.astype('float') / non_normalized_cm.sum(axis=1)[:, np.newaxis]
 	output_util.plot_confusion_matrix(cm_normalized,labels,title='Normalized Confusion Matrix')
