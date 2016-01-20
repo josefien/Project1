@@ -1,6 +1,6 @@
 import sys
-sys.path.append('C:/Users/Nadine/git/Project1/feature_extraction')
-sys.path.append('C:/Users/Nadine/git/Project1/util')
+sys.path.append('../feature_extraction')
+sys.path.append('../util')
 import feature_extraction as feat_ext
 from sklearn.cross_validation import StratifiedKFold
 from sklearn.pipeline import Pipeline

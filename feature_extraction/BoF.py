@@ -1,5 +1,5 @@
 import sys
-sys.path.append('C:/Users/Nadine/git/Project1/util')
+sys.path.append('../util')
 import cv2
 import numpy as np
 import os

@@ -1,5 +1,5 @@
 import sys
-sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/util')
+sys.path.append('../util')
 from image_loader import *
 import cv2
 import numpy as np

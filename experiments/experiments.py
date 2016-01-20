@@ -1,7 +1,7 @@
 import sys
-sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/svm')
-sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/util')
-sys.path.append('C:/Users/Wim/Documents/AIDKE/Project 1/New Code/feature_extraction')
+sys.path.append('../svm')
+sys.path.append('../util')
+sys.path.append('../feature_extraction')
 from dataloader import DataLoader
 from scikitsvm import Scikit_SVM
 from sklearn.metrics import confusion_matrix
